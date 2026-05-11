@@ -21,10 +21,10 @@ DB_NAME = "quiz_pro_data.db"
 def init_db():
     conn = sqlite3.connect(DB_NAME)
     c = conn.cursor()
-    # History for 30-day repetition logic
+    # [span_2](start_span)30-day repetition logic[span_2](end_span)
     c.execute('''CREATE TABLE IF NOT EXISTS history 
                  (question_hash TEXT PRIMARY KEY, last_used TIMESTAMP)''')
-    # All-Time Stats
+    # Persistent All-Time Stats
     c.execute('''CREATE TABLE IF NOT EXISTS all_time_stats 
                  (user_id INTEGER PRIMARY KEY, name TEXT, 
                   correct INTEGER DEFAULT 0, wrong INTEGER DEFAULT 0, 
@@ -48,7 +48,6 @@ def mark_question_used(question_text):
 def get_used_hashes_30_days():
     conn = sqlite3.connect(DB_NAME)
     c = conn.cursor()
-    # 30-day logic
     thirty_days_ago = datetime.now() - timedelta(days=30) 
     c.execute("SELECT question_hash FROM history WHERE last_used > ?", (thirty_days_ago,))
     used = {row[0] for row in c.fetchall()}
@@ -118,7 +117,7 @@ def handle_poll_answer(poll_answer):
             user_scores[uid]["score"] += 1.0
         else:
             user_scores[uid]["wrong"] += 1
-            user_scores[uid]["score"] -= 0.25 # Negative marking
+            [span_3](start_span)user_scores[uid]["score"] -= 0.25 # Negative marking[span_3](end_span)
             ch = current_poll_data["chapter"]
             wrong_chapters_tracker.setdefault(uid, {}).setdefault(ch, 0)
             wrong_chapters_tracker[uid][ch] += 1
@@ -135,7 +134,7 @@ def handle_callbacks(call):
         if uid not in user_scores:
             user_scores[uid] = {"name": call.from_user.first_name, "correct": 0, "wrong": 0, "skip": 0, "score": 0.0}
         skipped_this_q.add(uid)
-        user_scores[uid]["skip"] += 1
+        [span_4](start_span)user_scores[uid]["skip"] += 1 # Tracking skipped count[span_4](end_span)
         current_poll_data["skip_count"] += 1
         bot.answer_callback_query(call.id, "⏩ Skipped!")
 
@@ -218,16 +217,28 @@ def run_quiz(chat_id):
 
     save_session_to_db(user_scores, wrong_chapters_tracker)
     
+    # [span_5](start_span)Combined Leaderboard[span_5](end_span)
     report = f"📋 **EXAMINATION LEADERBOARD** 📋\n━━━━━━━━━━━━━━\n"
     sorted_u = sorted(user_scores.values(), key=lambda x: x['score'], reverse=True)
     for i, u in enumerate(sorted_u[:10], 1):
         uid = next(k for k, v in user_scores.items() if v['name'] == u['name'])
-        total = u['correct'] + u['wrong']
-        acc = (u['correct'] / total * 100) if total > 0 else 0
+        attended = u['correct'] + u['wrong'] # Attended count
+        acc = (u['correct'] / attended * 100) if attended > 0 else 0
         report += (f"{i}. 👤 **{u['name']}**\n"
-                   f"✅ {u['correct']} | ❌ {u['wrong']} | 🎯 {acc:.1f}%\n"
+                   f"✅ {u['correct']} | ❌ {u['wrong']} | ⏩ {u['skip']}\n"
+                   f"📝 Attended: {attended} | 🎯 {acc:.1f}%\n"
                    f"🏆 Score: {u['score']:.2f} | ⚠️ Weak: {get_weak_chapter(uid)}\n"
                    f"━━━━━━━━━━━━━━\n")
+    
+    # All-Time Leaderboard Section
+    report += "\n👑 **ALL-TIME HALL OF FAME** 👑\n━━━━━━━━━━━━━━\n"
+    conn = sqlite3.connect(DB_NAME)
+    c = conn.cursor()
+    c.execute("SELECT name, score FROM all_time_stats ORDER BY score DESC LIMIT 5")
+    for i, row in enumerate(c.fetchall(), 1):
+        report += f"{i}. {row[0]} — {row[1]:.2f} pts\n"
+    conn.close()
+
     bot.send_message(GROUP_ID, report, parse_mode="Markdown")
 
 # ===== 5. ADMIN HANDLERS =====
@@ -302,4 +313,4 @@ def start_trigger(message):
 
 if __name__ == "__main__":
     bot.infinity_polling(skip_pending=True)
-            
+    
