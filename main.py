@@ -4,7 +4,7 @@ import os
 import random
 import time
 
-API_TOKEN = os.getenv("8794639715:AAEY4b17JvJuDcv_I__vY15Sr38ENgCefhQ")
+API_TOKEN = os.getenv("BOT_TOKEN")
 bot = telebot.TeleBot(API_TOKEN)
 
 ADMIN_KEY = "Eshu2005aru"
