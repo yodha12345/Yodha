@@ -147,26 +147,31 @@ def run_quiz(chat_id):
     user_scores.clear()
     data = user_state[chat_id]
     sub = data['subject']
-    chapters_text = ", ".join(data['chapters'])
     
-    stop_markup = types.InlineKeyboardMarkup().add(types.InlineKeyboardButton("🛑 STOP QUIZ", callback_data="stop_quiz"))
-    bot.send_message(chat_id, "🚨 **Admin Control Panel**\nUse this button to stop the quiz:", reply_markup=stop_markup)
-
-    instr = (f"📋 **EXAM SETUP** 📋\n━━━━━━━━━━━━━━\n"
-             f"📚 Subject: {sub.upper()}\n"
-             f"📂 Chapters: {chapters_text}\n"
-             f"⏱️ Timer: {data['timer']}s | 👤 Limit: {data['max_answers']}\n"
-             f"❌ Negative Mark: -0.25\n━━━━━━━━━━━━━━\n🚀 Starting in 20s...")
-    instr_msg = bot.send_message(GROUP_ID, instr)
-    time.sleep(20)
-    bot.delete_message(GROUP_ID, instr_msg.message_id)
-
+    # Pre-calculate questions
     all_pool = []
     for ch in data['chapters']: all_pool.extend(question_bank[sub].get(ch, []))
     used_hashes = get_used_hashes_30_days()
     fresh_pool = [q for q in all_pool if hashlib.md5(q.encode('utf-8')).hexdigest() not in used_hashes]
     pool_to_use = fresh_pool if len(fresh_pool) >= data['count'] else all_pool
     selected = random.sample(pool_to_use, min(data['count'], len(pool_to_use)))
+    total_q = len(selected)
+
+    # Admin stop button
+    stop_markup = types.InlineKeyboardMarkup().add(types.InlineKeyboardButton("🛑 STOP QUIZ", callback_data="stop_quiz"))
+    bot.send_message(chat_id, "🚨 **Exam Control Panel**\nAdmin, use this to stop the quiz:", reply_markup=stop_markup)
+
+    # Pre-Exam Instructions
+    chapters_text = ", ".join(data['chapters'])
+    instr = (f"📋 **EXAM INSTRUCTIONS** 📋\n━━━━━━━━━━━━━━\n"
+             f"📚 Subject: {sub.upper()}\n"
+             f"📂 Chapters: {chapters_text}\n"
+             f"🔢 Total Questions: {total_q}\n"
+             f"⏱️ Timer: {data['timer']}s | 👤 Limit: {data['max_answers']}\n"
+             f"❌ Negative Mark: -0.25\n━━━━━━━━━━━━━━\n🚀 Starting in 20s...")
+    instr_msg = bot.send_message(GROUP_ID, instr)
+    time.sleep(20)
+    bot.delete_message(GROUP_ID, instr_msg.message_id)
 
     for block in selected:
         if not quiz_active.get(GROUP_ID): break
@@ -276,21 +281,30 @@ def sel_ch(m):
 
 @bot.message_handler(func=lambda m: user_step.get(m.chat.id) == "count")
 def sel_count(m):
-    user_state[m.chat.id]['count'] = int(m.text)
-    user_step[m.chat.id] = "timer"
-    bot.send_message(m.chat.id, "⏱️ **Timer (sec):**")
+    try:
+        user_state[m.chat.id]['count'] = int(m.text)
+        user_step[m.chat.id] = "timer"
+        bot.send_message(m.chat.id, "⏱️ **Timer (sec):**")
+    except:
+        bot.send_message(m.chat.id, "❌ Enter a valid number.")
 
 @bot.message_handler(func=lambda m: user_step.get(m.chat.id) == "timer")
 def sel_timer(m):
-    user_state[m.chat.id]['timer'] = int(m.text)
-    user_step[m.chat.id] = "limit"
-    bot.send_message(m.chat.id, "👤 **Answer Limit:**")
+    try:
+        user_state[m.chat.id]['timer'] = int(m.text)
+        user_step[m.chat.id] = "limit"
+        bot.send_message(m.chat.id, "👤 **Answer Limit:**")
+    except:
+        bot.send_message(m.chat.id, "❌ Enter a valid number.")
 
 @bot.message_handler(func=lambda m: user_step.get(m.chat.id) == "limit")
 def sel_limit(m):
-    user_state[m.chat.id]['max_answers'] = int(m.text)
-    user_step[m.chat.id] = "ready"
-    bot.send_message(m.chat.id, "✅ Ready!", reply_markup=types.ReplyKeyboardMarkup(resize_keyboard=True).add("START QUIZ 🚀"))
+    try:
+        user_state[m.chat.id]['max_answers'] = int(m.text)
+        user_step[m.chat.id] = "ready"
+        bot.send_message(m.chat.id, "✅ Ready!", reply_markup=types.ReplyKeyboardMarkup(resize_keyboard=True).add("START QUIZ 🚀"))
+    except:
+        bot.send_message(m.chat.id, "❌ Enter a valid number.")
 
 @bot.message_handler(func=lambda m: m.text == "START QUIZ 🚀" and user_step.get(m.chat.id) == "ready")
 def start_trigger(message):
@@ -300,4 +314,4 @@ def start_trigger(message):
 if __name__ == "__main__":
     print("🤖 Bot is starting up...")
     bot.infinity_polling(skip_pending=True)
-        
+    
