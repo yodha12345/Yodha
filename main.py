@@ -14,7 +14,7 @@ bot = telebot.TeleBot(API_TOKEN, threaded=True, num_threads=25)
 
 ADMIN_KEY = "Eshu2005aru"
 GROUP_ID = -1003746627836 
-VERIFY_CHANNEL_ID = -1001234567890 # 📢 Replace with your Private Channel ID
+VERIFY_CHANNEL_ID = -1003786586918 # 📢 Replace with your Private Channel ID
 
 # ===== 1. DATABASE SYSTEM (Persistent Memory) =====
 DB_NAME = "quiz_pro_data.db"
