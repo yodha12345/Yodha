@@ -7875,3 +7875,1108 @@ If you want final upgrade:
 🎯 “Only real PYQ sorted by shift”
 
 Just tell 👍
+
+#reproduction
+
+Sexual reproduction involves how many parents? (যৌন প্রজননে কতজন অভিভাবক অংশগ্রহণ করে?)
+A) One parent (একজন অভিভাবক)
+B) Two parents (দুইজন অভিভাবক)
+C) Three parents (তিনজন অভিভাবক)
+D) No parent (কোনো অভিভাবক নয়)
+Answer: B
+
+Which process ensures continuity of species? (কোন প্রক্রিয়া প্রজাতির ধারাবাহিকতা নিশ্চিত করে?)
+A) Digestion (পরিপাক)
+B) Respiration (শ্বসন)
+C) Reproduction (প্রজনন)
+D) Excretion (রেচন)
+Answer: C
+
+Variation mainly occurs due to errors in? (বৈচিত্র্য প্রধানত কিসের ত্রুটির কারণে ঘটে?)
+A) Protein digestion (প্রোটিন পরিপাক)
+B) DNA replication (DNA প্রতিলিপি)
+C) Blood circulation (রক্ত সঞ্চালন)
+D) Respiration (শ্বসন)
+Answer: B
+
+Which factor helps species survive environmental changes? (কোন উপাদান পরিবেশগত পরিবর্তনে প্রজাতিকে টিকে থাকতে সাহায্য করে?)
+A) Mutation only (শুধু মিউটেশন)
+B) Temperature (তাপমাত্রা)
+C) Variation (বৈচিত্র্য)
+D) Competition (প্রতিযোগিতা)
+Answer: C
+
+Reproduction is essential for? (প্রজনন কিসের জন্য অপরিহার্য?)
+A) Individual survival (ব্যক্তির বেঁচে থাকা)
+B) Species continuity (প্রজাতির ধারাবাহিকতা)
+C) Digestion (পরিপাক)
+D) Movement (চলন)
+Answer: B
+
+Which process forms new cells during reproduction? (প্রজননের সময় কোন প্রক্রিয়ায় নতুন কোষ তৈরি হয়?)
+A) Cell division (কোষ বিভাজন)
+B) Excretion (রেচন)
+C) Transpiration (বাষ্পমোক্ষণ)
+D) Circulation (সঞ্চালন)
+Answer: A
+
+Useful variations lead to? (উপকারী বৈচিত্র্য কী সৃষ্টি করে?)
+A) Extinction (বিলুপ্তি)
+B) Evolution (বিবর্তন)
+C) Digestion (পরিপাক)
+D) Respiration (শ্বসন)
+Answer: B
+
+Which type of reproduction produces variation? (কোন ধরনের প্রজননে বৈচিত্র্য সৃষ্টি হয়?)
+A) Asexual reproduction (অযৌন প্রজনন)
+B) Sexual reproduction (যৌন প্রজনন)
+C) Budding only (শুধু কুঁড়ি সৃষ্টি)
+D) Fragmentation only (শুধু খণ্ডিতকরণ)
+Answer: B
+
+What is formed after fusion of male and female gametes? (পুরুষ ও স্ত্রী গ্যামেটের মিলনের পরে কী তৈরি হয়?)
+A) Embryo (ভ্রূণ)
+B) Seed (বীজ)
+C) Zygote (জাইগোট)
+D) Ovary (ডিম্বাশয়)
+Answer: C
+
+Which reproduction occurs in Hydra? (হাইড্রায় কোন প্রজনন দেখা যায়?)
+A) Binary fission (দ্বিখণ্ডন)
+B) Budding (কুঁড়ি সৃষ্টি)
+C) Regeneration (পুনর্জন্ম)
+D) Sexual reproduction (যৌন প্রজনন)
+Answer: B
+
+Which organism reproduces by binary fission? (কোন জীব দ্বিখণ্ডনের মাধ্যমে প্রজনন করে?)
+A) Amoeba (অ্যামিবা)
+B) Hydra (হাইড্রা)
+C) Frog (ব্যাঙ)
+D) Human (মানুষ)
+Answer: A
+
+External fertilization commonly occurs in? (বাহ্যিক নিষেক সাধারণত কোথায় দেখা যায়?)
+A) Human (মানুষ)
+B) Cow (গরু)
+C) Frog (ব্যাঙ)
+D) Dog (কুকুর)
+Answer: C
+
+Where does external fertilization occur? (বাহ্যিক নিষেক কোথায় ঘটে?)
+A) Inside body (দেহের ভিতরে)
+B) In water (জলে)
+C) In stomach (পেটে)
+D) In lungs (ফুসফুসে)
+Answer: B
+
+Tadpole is the larval stage of? (ট্যাডপোল কোন প্রাণীর লার্ভা দশা?)
+A) Fish (মাছ)
+B) Frog (ব্যাঙ)
+C) Lizard (টিকটিকি)
+D) Snake (সাপ)
+Answer: B
+
+Which organ helps tadpole breathe in water? (ট্যাডপোলকে জলে শ্বাস নিতে কোন অঙ্গ সাহায্য করে?)
+A) Lungs (ফুসফুস)
+B) Gills (ফুলকা)
+C) Skin only (শুধু ত্বক)
+D) Spiracles (শ্বাসরন্ধ্র)
+Answer: B
+
+Viviparous animals give birth to? (জরায়ুজ প্রাণী কী জন্ম দেয়?)
+A) Eggs (ডিম)
+B) Spores (স্পোর)
+C) Young ones (শিশু)
+D) Seeds (বীজ)
+Answer: C
+
+Which is an oviparous animal? (কোনটি অণ্ডজ প্রাণী?)
+A) Cow (গরু)
+B) Human (মানুষ)
+C) Frog (ব্যাঙ)
+D) Dog (কুকুর)
+Answer: C
+
+Where does embryo develop in viviparous animals? (জরায়ুজ প্রাণীতে ভ্রূণ কোথায় বিকশিত হয়?)
+A) Outside body (দেহের বাইরে)
+B) Inside female body (স্ত্রীর দেহের ভিতরে)
+C) In water (জলে)
+D) In nest (বাসায়)
+Answer: B
+
+Male reproductive part of flower is? (ফুলের পুরুষ প্রজনন অঙ্গ কোনটি?)
+A) Pistil (গর্ভকেশর)
+B) Ovary (ডিম্বাশয়)
+C) Stamen (পুংকেশর)
+D) Ovule (ডিম্বক)
+Answer: C
+
+Female reproductive part of flower is? (ফুলের স্ত্রী প্রজনন অঙ্গ কোনটি?)
+A) Stamen (পুংকেশর)
+B) Pistil (গর্ভকেশর)
+C) Anther (পরাগধানী)
+D) Filament (পুংদণ্ড)
+Answer: B
+
+Which part produces pollen grains? (কোন অংশ পরাগরেণু উৎপন্ন করে?)
+A) Ovary (ডিম্বাশয়)
+B) Stigma (গর্ভমুণ্ড)
+C) Anther (পরাগধানী)
+D) Style (গর্ভদণ্ড)
+Answer: C
+
+Pollination is transfer of pollen from? (পরাগায়ন হল পরাগরেণুর স্থানান্তর কোথা থেকে কোথায়?)
+A) Ovary to stigma (ডিম্বাশয় থেকে গর্ভমুণ্ডে)
+B) Anther to stigma (পরাগধানী থেকে গর্ভমুণ্ডে)
+C) Style to ovary (গর্ভদণ্ড থেকে ডিম্বাশয়ে)
+D) Ovule to anther (ডিম্বক থেকে পরাগধানীতে)
+Answer: B
+
+After fertilization ovule develops into? (নিষেকের পরে ডিম্বক কীতে পরিণত হয়?)
+A) Fruit (ফল)
+B) Seed (বীজ)
+C) Flower (ফুল)
+D) Leaf (পাতা)
+Answer: B
+
+After fertilization ovary develops into? (নিষেকের পরে ডিম্বাশয় কীতে পরিণত হয়?)
+A) Seed (বীজ)
+B) Root (মূল)
+C) Fruit (ফল)
+D) Stem (কাণ্ড)
+Answer: C
+
+Seed dispersal prevents? (বীজ বিস্তার কী প্রতিরোধ করে?)
+A) Germination (অঙ্কুরোদগম)
+B) Overcrowding (অতিরিক্ত ভিড়)
+C) Pollination (পরাগায়ন)
+D) Fertilization (নিষেক)
+Answer: B
+
+Which part of seed becomes future shoot? (বীজের কোন অংশ ভবিষ্যৎ অঙ্কুরে পরিণত হয়?)
+A) Radicle (মূলাঙ্কুর)
+B) Cotyledon (বীজপত্র)
+C) Plumule (প্লুমিউল)
+D) Seed coat (বীজ আবরণ)
+Answer: C
+
+Which part of seed becomes future root? (বীজের কোন অংশ ভবিষ্যৎ মূলে পরিণত হয়?)
+A) Plumule (প্লুমিউল)
+B) Radicle (মূলাঙ্কুর)
+C) Cotyledon (বীজপত্র)
+D) Ovary (ডিম্বাশয়)
+Answer: B
+
+Menstruation occurs when? (ঋতুস্রাব কখন ঘটে?)
+A) Egg is fertilized (ডিম নিষিক্ত হলে)
+B) Egg is not fertilized (ডিম নিষিক্ত না হলে)
+C) Ovulation occurs (ডিম্বস্ফোটন হলে)
+D) Pregnancy occurs (গর্ভধারণ হলে)
+Answer: B
+
+What is the shedding of uterine lining called? (জরায়ুর আবরণ ঝরে পড়াকে কী বলে?)
+A) Ovulation (ডিম্বস্ফোটন)
+B) Fertilization (নিষেক)
+C) Menstruation (ঋতুস্রাব)
+D) Implantation (প্রতিস্থাপন)
+Answer: C
+
+What is the end of menstruation called? (ঋতুস্রাব বন্ধ হওয়াকে কী বলে?)
+A) Menarche (মেনার্কি)
+B) Menopause (মেনোপজ)
+C) Ovulation (ডিম্বস্ফোটন)
+D) Fertilization (নিষেক)
+Answer: B
+
+Which method prevents pregnancy using barriers? (কোন পদ্ধতিতে বাধা ব্যবহার করে গর্ভধারণ রোধ করা হয়?)
+A) Surgery (অস্ত্রোপচার)
+B) Barrier method (বাধা পদ্ধতি)
+C) Vaccination (টিকাকরণ)
+D) Injection (ইনজেকশন)
+Answer: B
+
+Which contraceptive also prevents STDs? (কোন গর্ভনিরোধক STD প্রতিরোধেও সাহায্য করে?)
+A) Copper-T (কপার-টি)
+B) Pills (গর্ভনিরোধক বড়ি)
+C) Condom (কনডম)
+D) Surgery (অস্ত্রোপচার)
+Answer: C
+
+Which disease is caused by HIV? (HIV কোন রোগ সৃষ্টি করে?)
+A) Syphilis (সিফিলিস)
+B) Gonorrhoea (গনোরিয়া)
+C) AIDS (এইডস)
+D) Malaria (ম্যালেরিয়া)
+Answer: C
+
+Which STD is caused by bacteria? (কোন যৌনরোগ ব্যাকটেরিয়ার দ্বারা হয়?)
+A) AIDS (এইডস)
+B) Warts (ওয়ার্টস)
+C) Gonorrhoea (গনোরিয়া)
+D) Dengue (ডেঙ্গু)
+Answer: C
+
+Which reproductive phase involves transfer of sperm? (প্রজননের কোন ধাপে শুক্রাণু স্থানান্তর হয়?)
+A) Fertilization (নিষেক)
+B) Implantation (প্রতিস্থাপন)
+C) Insemination (বীর্যরোপণ)
+D) Gestation (গর্ভকাল)
+Answer: C
+
+Fusion of sperm and ovum is called? (শুক্রাণু ও ডিম্বাণুর মিলনকে কী বলে?)
+A) Implantation (প্রতিস্থাপন)
+B) Fertilization (নিষেক)
+C) Ovulation (ডিম্বস্ফোটন)
+D) Gestation (গর্ভকাল)
+Answer: B
+
+Minimum age for gamete formation in humans starts at? (মানুষে গ্যামেট গঠন শুরু হওয়ার সর্বনিম্ন বয়স কত?)
+A) Childhood (শৈশব)
+B) Puberty (বয়ঃসন্ধি)
+C) Old age (বার্ধক্য)
+D) Infancy (শিশুকাল)
+Answer: B
+
+Which structure protects embryo in seed? (বীজে কোন গঠন ভ্রূণকে রক্ষা করে?)
+A) Seed coat (বীজ আবরণ)
+B) Plumule (প্লুমিউল)
+C) Radicle (মূলাঙ্কুর)
+D) Cotyledon (বীজপত্র)
+Answer: A
+
+Which flower is unisexual? (কোন ফুল একলিঙ্গ?)
+A) Hibiscus (জবা)
+B) Mustard (সরিষা)
+C) Papaya (পেঁপে)
+D) Sunflower (সূর্যমুখী)
+Answer: C
+
+Which process helps plants grow in new areas? (কোন প্রক্রিয়া উদ্ভিদকে নতুন স্থানে জন্মাতে সাহায্য করে?)
+A) Pollination (পরাগায়ন)
+B) Seed dispersal (বীজ বিস্তার)
+C) Fertilization (নিষেক)
+D) Budding (কুঁড়ি সৃষ্টি)
+Answer: B
+
+Based on your uploaded PDFs:     
+
+Which process directly forms a zygote? (কোন প্রক্রিয়ায় সরাসরি জাইগোট তৈরি হয়?)
+A) Pollination (পরাগায়ন)
+B) Fertilization (নিষেক)
+C) Germination (অঙ্কুরোদগম)
+D) Budding (কুঁড়ি সৃষ্টি)
+Answer: B
+
+Which stage comes immediately after fertilization in plants? (উদ্ভিদে নিষেকের পরপর কোন ধাপ আসে?)
+A) Pollination (পরাগায়ন)
+B) Seed dispersal (বীজ বিস্তার)
+C) Zygote formation (জাইগোট গঠন)
+D) Germination (অঙ্কুরোদগম)
+Answer: C
+
+Which structure receives pollen grains? (কোন অংশ পরাগরেণু গ্রহণ করে?)
+A) Ovary (ডিম্বাশয়)
+B) Style (গর্ভদণ্ড)
+C) Stigma (গর্ভমুণ্ড)
+D) Filament (পুংদণ্ড)
+Answer: C
+
+Which part connects anther to flower? (ফুলের সাথে পরাগধানীকে কোন অংশ যুক্ত করে?)
+A) Stigma (গর্ভমুণ্ড)
+B) Filament (পুংদণ্ড)
+C) Ovule (ডিম্বক)
+D) Style (গর্ভদণ্ড)
+Answer: B
+
+Which reproductive method involves only one parent? (কোন প্রজনন পদ্ধতিতে শুধুমাত্র একটি অভিভাবক অংশ নেয়?)
+A) Sexual reproduction (যৌন প্রজনন)
+B) Asexual reproduction (অযৌন প্রজনন)
+C) External fertilization (বাহ্যিক নিষেক)
+D) Internal fertilization (অভ্যন্তরীণ নিষেক)
+Answer: B
+
+Which reproductive process increases biodiversity? (কোন প্রজনন প্রক্রিয়া জীববৈচিত্র্য বৃদ্ধি করে?)
+A) Fragmentation (খণ্ডিতকরণ)
+B) Binary fission (দ্বিখণ্ডন)
+C) Sexual reproduction (যৌন প্রজনন)
+D) Budding (কুঁড়ি সৃষ্টি)
+Answer: C
+
+Which of the following is NOT a benefit of variation? (নিম্নের কোনটি বৈচিত্র্যের উপকারিতা নয়?)
+A) Disease resistance (রোগ প্রতিরোধ)
+B) Adaptation (অভিযোজন)
+C) Evolution (বিবর্তন)
+D) Extinction of all species (সব প্রজাতির বিলুপ্তি)
+Answer: D
+
+Which reproductive phase occurs after insemination? (বীর্যরোপণের পরে কোন ধাপ ঘটে?)
+A) Implantation (প্রতিস্থাপন)
+B) Fertilization (নিষেক)
+C) Gametogenesis (গ্যামেটোজেনেসিস)
+D) Gestation (গর্ভকাল)
+Answer: B
+
+What is the function of cotyledon? (বীজপত্রের কাজ কী?)
+A) Water transport (জল পরিবহন)
+B) Food storage (খাদ্য সঞ্চয়)
+C) Photosynthesis only (শুধু সালোকসংশ্লেষ)
+D) Reproduction (প্রজনন)
+Answer: B
+
+Which part develops into shoot in embryo? (ভ্রূণে কোন অংশ অঙ্কুরে পরিণত হয়?)
+A) Radicle (মূলাঙ্কুর)
+B) Plumule (প্লুমিউল)
+C) Cotyledon (বীজপত্র)
+D) Ovule (ডিম্বক)
+Answer: B
+
+Which stage of frog develops lungs? (ব্যাঙের কোন পর্যায়ে ফুসফুস গঠিত হয়?)
+A) Egg (ডিম)
+B) Tadpole (ট্যাডপোল)
+C) Tadpole with legs (পা-ওয়ালা ট্যাডপোল)
+D) Adult frog (পূর্ণবয়স্ক ব্যাঙ)
+Answer: C
+
+Which organism can live both on land and water after metamorphosis? (রূপান্তরের পরে কোন প্রাণী জল ও স্থল উভয় স্থানে বাস করতে পারে?)
+A) Fish (মাছ)
+B) Frog (ব্যাঙ)
+C) Snake (সাপ)
+D) Earthworm (কেঁচো)
+Answer: B
+
+Which animal lays eggs outside the body? (কোন প্রাণী দেহের বাইরে ডিম পাড়ে?)
+A) Human (মানুষ)
+B) Cow (গরু)
+C) Hen (মুরগি)
+D) Dog (কুকুর)
+Answer: C
+
+Which flower part contains ovules? (ফুলের কোন অংশে ডিম্বক থাকে?)
+A) Stigma (গর্ভমুণ্ড)
+B) Ovary (ডিম্বাশয়)
+C) Filament (পুংদণ্ড)
+D) Anther (পরাগধানী)
+Answer: B
+
+Which event occurs before fertilization in plants? (উদ্ভিদে নিষেকের আগে কোন ঘটনা ঘটে?)
+A) Germination (অঙ্কুরোদগম)
+B) Pollination (পরাগায়ন)
+C) Seed formation (বীজ গঠন)
+D) Fruit formation (ফল গঠন)
+Answer: B
+
+Which method spreads seeds to distant places? (কোন প্রক্রিয়া বীজকে দূরবর্তী স্থানে ছড়িয়ে দেয়?)
+A) Fertilization (নিষেক)
+B) Seed dispersal (বীজ বিস্তার)
+C) Pollination (পরাগায়ন)
+D) Budding (কুঁড়ি সৃষ্টি)
+Answer: B
+
+Which process prevents competition among plants? (কোন প্রক্রিয়া উদ্ভিদের মধ্যে প্রতিযোগিতা কমায়?)
+A) Pollination (পরাগায়ন)
+B) Fertilization (নিষেক)
+C) Seed dispersal (বীজ বিস্তার)
+D) Germination (অঙ্কুরোদগম)
+Answer: C
+
+Which disease weakens the immune system severely? (কোন রোগ রোগপ্রতিরোধ ক্ষমতাকে মারাত্মকভাবে দুর্বল করে?)
+A) Gonorrhoea (গনোরিয়া)
+B) Syphilis (সিফিলিস)
+C) AIDS (এইডস)
+D) Malaria (ম্যালেরিয়া)
+Answer: C
+
+Which contraceptive method physically blocks sperm entry? (কোন গর্ভনিরোধক পদ্ধতি শারীরিকভাবে শুক্রাণুর প্রবেশ আটকায়?)
+A) Hormonal pills (হরমোন বড়ি)
+B) Surgery (অস্ত্রোপচার)
+C) Barrier method (বাধা পদ্ধতি)
+D) Injection (ইনজেকশন)
+Answer: C
+
+Which contraceptive is used by males? (পুরুষদের দ্বারা ব্যবহৃত গর্ভনিরোধক কোনটি?)
+A) Copper-T (কপার-টি)
+B) Condom (কনডম)
+C) Diaphragm (ডায়াফ্রাম)
+D) Contraceptive sponge (গর্ভনিরোধক স্পঞ্জ)
+Answer: B
+
+Which STD is caused by Treponema pallidum? (Treponema pallidum দ্বারা কোন STD হয়?)
+A) AIDS (এইডস)
+B) Syphilis (সিফিলিস)
+C) Warts (ওয়ার্টস)
+D) Gonorrhoea (গনোরিয়া)
+Answer: B
+
+Which STD causes painful urination? (কোন যৌনরোগে প্রস্রাবে জ্বালা হয়?)
+A) AIDS (এইডস)
+B) Syphilis (সিফিলিস)
+C) Gonorrhoea (গনোরিয়া)
+D) Malaria (ম্যালেরিয়া)
+Answer: C
+
+Which virus causes genital warts? (কোন ভাইরাস জননাঙ্গে ওয়ার্ট সৃষ্টি করে?)
+A) HIV (এইচআইভি)
+B) HPV (এইচপিভি)
+C) Dengue virus (ডেঙ্গু ভাইরাস)
+D) Rabies virus (রেবিস ভাইরাস)
+Answer: B
+
+What is the first menstrual flow called? (প্রথম ঋতুস্রাবকে কী বলা হয়?)
+A) Menopause (মেনোপজ)
+B) Ovulation (ডিম্বস্ফোটন)
+C) Menarche (মেনার্কি)
+D) Fertilization (নিষেক)
+Answer: C
+
+How long does normal menstruation usually last? (স্বাভাবিক ঋতুস্রাব সাধারণত কতদিন স্থায়ী হয়?)
+A) 1–2 days (১–২ দিন)
+B) 3–5 days (৩–৫ দিন)
+C) 10–12 days (১০–১২ দিন)
+D) 15 days (১৫ দিন)
+Answer: B
+
+Which organ releases egg during ovulation? (ডিম্বস্ফোটনের সময় কোন অঙ্গ ডিম্বাণু মুক্ত করে?)
+A) Uterus (জরায়ু)
+B) Ovary (ডিম্বাশয়)
+C) Vagina (যোনি)
+D) Kidney (কিডনি)
+Answer: B
+
+Which process prepares uterus for pregnancy? (কোন প্রক্রিয়া জরায়ুকে গর্ভধারণের জন্য প্রস্তুত করে?)
+A) Respiration (শ্বসন)
+B) Menstrual cycle (ঋতুচক্র)
+C) Digestion (পরিপাক)
+D) Excretion (রেচন)
+Answer: B
+
+Which reproductive structure forms fruit after fertilization? (নিষেকের পরে কোন প্রজনন অংশ ফল তৈরি করে?)
+A) Ovary (ডিম্বাশয়)
+B) Ovule (ডিম্বক)
+C) Anther (পরাগধানী)
+D) Stigma (গর্ভমুণ্ড)
+Answer: A
+
+Which flower part is sticky for receiving pollen? (পরাগ গ্রহণের জন্য ফুলের কোন অংশ আঠালো হয়?)
+A) Filament (পুংদণ্ড)
+B) Ovary (ডিম্বাশয়)
+C) Stigma (গর্ভমুণ্ড)
+D) Sepal (বৃতি)
+Answer: C
+
+Which structure carries female gamete in plants? (উদ্ভিদে স্ত্রী গ্যামেট কোন গঠনে থাকে?)
+A) Pollen grain (পরাগরেণু)
+B) Ovule (ডিম্বক)
+C) Anther (পরাগধানী)
+D) Filament (পুংদণ্ড)
+Answer: B
+
+Which phase follows fertilization in human reproduction? (মানব প্রজননে নিষেকের পরে কোন ধাপ আসে?)
+A) Implantation (প্রতিস্থাপন)
+B) Gametogenesis (গ্যামেটোজেনেসিস)
+C) Insemination (বীর্যরোপণ)
+D) Ovulation (ডিম্বস্ফোটন)
+Answer: A
+
+Which process forms male and female gametes? (কোন প্রক্রিয়ায় পুরুষ ও স্ত্রী গ্যামেট তৈরি হয়?)
+A) Fertilization (নিষেক)
+B) Gametogenesis (গ্যামেটোজেনেসিস)
+C) Implantation (প্রতিস্থাপন)
+D) Gestation (গর্ভকাল)
+Answer: B
+
+What is the maximum age of ovum formation in females generally? (মহিলাদের ডিম্বাণু গঠনের সর্বোচ্চ বয়স সাধারণত কত?)
+A) 25 years (২৫ বছর)
+B) 35 years (৩৫ বছর)
+C) 50 years (৫০ বছর)
+D) 70 years (৭০ বছর)
+Answer: C
+
+Which process occurs in fallopian tube? (ফ্যালোপিয়ান টিউবে কোন প্রক্রিয়া ঘটে?)
+A) Implantation (প্রতিস্থাপন)
+B) Fertilization (নিষেক)
+C) Menstruation (ঋতুস্রাব)
+D) Ovulation (ডিম্বস্ফোটন)
+Answer: B
+
+Which organism reproduces through spores? (কোন জীব স্পোরের মাধ্যমে প্রজনন করে?)
+A) Rhizopus (রাইজোপাস)
+B) Human (মানুষ)
+C) Frog (ব্যাঙ)
+D) Dog (কুকুর)
+Answer: A
+
+Which reproductive mode produces genetically identical offspring? (কোন প্রজনন পদ্ধতিতে জিনগতভাবে অভিন্ন সন্তান তৈরি হয়?)
+A) Sexual reproduction (যৌন প্রজনন)
+B) Asexual reproduction (অযৌন প্রজনন)
+C) Cross fertilization (পরনিষেক)
+D) External fertilization (বাহ্যিক নিষেক)
+Answer: B
+
+Which reproductive process helps adaptation most? (কোন প্রজনন প্রক্রিয়া অভিযোজনে সবচেয়ে বেশি সাহায্য করে?)
+A) Budding (কুঁড়ি সৃষ্টি)
+B) Fragmentation (খণ্ডিতকরণ)
+C) Sexual reproduction (যৌন প্রজনন)
+D) Binary fission (দ্বিখণ্ডন)
+Answer: C
+
+Which reproductive structure develops into embryo after fertilization? (নিষেকের পরে কোন গঠন ভ্রূণে পরিণত হয়?)
+A) Zygote (জাইগোট)
+B) Ovary (ডিম্বাশয়)
+C) Anther (পরাগধানী)
+D) Stigma (গর্ভমুণ্ড)
+Answer: A
+
+Which plant reproductive process requires transfer of pollen grains? (উদ্ভিদের কোন প্রজনন প্রক্রিয়ায় পরাগরেণু স্থানান্তর প্রয়োজন?)
+A) Germination (অঙ্কুরোদগম)
+B) Pollination (পরাগায়ন)
+C) Seed dispersal (বীজ বিস্তার)
+D) Vegetative propagation (অঙ্গজ প্রজনন)
+Answer: B
+
+Based on your uploaded PDFs:     
+
+Which organism reproduces by fragmentation? (কোন জীব খণ্ডিতকরণের মাধ্যমে প্রজনন করে?)
+A) Hydra (হাইড্রা)
+B) Spirogyra (স্পাইরোজাইরা)
+C) Amoeba (অ্যামিবা)
+D) Yeast (ইস্ট)
+Answer: B
+
+Which asexual reproduction method occurs in yeast? (ইস্টে কোন অযৌন প্রজনন দেখা যায়?)
+A) Binary fission (দ্বিখণ্ডন)
+B) Budding (কুঁড়ি সৃষ্টি)
+C) Fragmentation (খণ্ডিতকরণ)
+D) Regeneration (পুনর্জন্ম)
+Answer: B
+
+Which structure in flower contains male gametes? (ফুলের কোন গঠনে পুরুষ গ্যামেট থাকে?)
+A) Ovule (ডিম্বক)
+B) Ovary (ডিম্বাশয়)
+C) Pollen grain (পরাগরেণু)
+D) Stigma (গর্ভমুণ্ড)
+Answer: C
+
+Which process produces offspring without gamete fusion? (কোন প্রক্রিয়ায় গ্যামেট মিলন ছাড়াই সন্তান উৎপন্ন হয়?)
+A) Sexual reproduction (যৌন প্রজনন)
+B) Fertilization (নিষেক)
+C) Asexual reproduction (অযৌন প্রজনন)
+D) Pollination (পরাগায়ন)
+Answer: C
+
+Which stage of human life begins reproductive maturity? (মানব জীবনের কোন পর্যায়ে প্রজনন ক্ষমতা শুরু হয়?)
+A) Childhood (শৈশব)
+B) Infancy (শিশুকাল)
+C) Puberty (বয়ঃসন্ধি)
+D) Old age (বার্ধক্য)
+Answer: C
+
+Which hormone controls menstrual cycle mainly? (কোন হরমোন প্রধানত ঋতুচক্র নিয়ন্ত্রণ করে?)
+A) Insulin (ইনসুলিন)
+B) Estrogen & progesterone (ইস্ট্রোজেন ও প্রোজেস্টেরন)
+C) Thyroxine (থাইরক্সিন)
+D) Adrenaline (অ্যাড্রেনালিন)
+Answer: B
+
+Which reproductive organ nourishes developing embryo? (কোন প্রজনন অঙ্গ বিকাশমান ভ্রূণকে পুষ্টি দেয়?)
+A) Ovary (ডিম্বাশয়)
+B) Uterus (জরায়ু)
+C) Vagina (যোনি)
+D) Kidney (কিডনি)
+Answer: B
+
+Which process allows pollen tube formation? (কোন প্রক্রিয়ায় পরাগনালী গঠিত হয়?)
+A) Fertilization (নিষেক)
+B) Pollination (পরাগায়ন)
+C) Germination of pollen grain (পরাগরেণুর অঙ্কুরোদগম)
+D) Seed dispersal (বীজ বিস্তার)
+Answer: C
+
+Which flower part develops into seed coat? (ফুলের কোন অংশ বীজ আবরণে পরিণত হয়?)
+A) Ovary wall (ডিম্বাশয়ের প্রাচীর)
+B) Integument (ইন্টেগুমেন্ট)
+C) Style (গর্ভদণ্ড)
+D) Stigma (গর্ভমুণ্ড)
+Answer: B
+
+Which type of pollination occurs within same flower? (একই ফুলের মধ্যে কোন ধরনের পরাগায়ন ঘটে?)
+A) Cross pollination (পরপরাগায়ন)
+B) Self pollination (স্বপরাগায়ন)
+C) External pollination (বাহ্যিক পরাগায়ন)
+D) Artificial pollination (কৃত্রিম পরাগায়ন)
+Answer: B
+
+Which process increases genetic stability? (কোন প্রক্রিয়া জিনগত স্থিতিশীলতা বাড়ায়?)
+A) Asexual reproduction (অযৌন প্রজনন)
+B) Mutation (মিউটেশন)
+C) Cross fertilization (পরনিষেক)
+D) Sexual reproduction (যৌন প্রজনন)
+Answer: A
+
+Which reproductive structure protects seed embryo? (কোন গঠন বীজের ভ্রূণকে রক্ষা করে?)
+A) Cotyledon (বীজপত্র)
+B) Seed coat (বীজ আবরণ)
+C) Radicle (মূলাঙ্কুর)
+D) Plumule (প্লুমিউল)
+Answer: B
+
+Which animal shows internal fertilization? (কোন প্রাণীতে অভ্যন্তরীণ নিষেক দেখা যায়?)
+A) Fish (মাছ)
+B) Frog (ব্যাঙ)
+C) Human (মানুষ)
+D) Starfish (তারামাছ)
+Answer: C
+
+Which reproductive strategy produces large number of offspring? (কোন প্রজনন কৌশলে বেশি সংখ্যক সন্তান উৎপন্ন হয়?)
+A) Internal fertilization (অভ্যন্তরীণ নিষেক)
+B) External fertilization (বাহ্যিক নিষেক)
+C) Viviparity (জরায়ুজতা)
+D) Gestation (গর্ভকাল)
+Answer: B
+
+Which structure carries sperm in humans? (মানুষে কোন গঠন শুক্রাণু বহন করে?)
+A) Urethra (মূত্রনালী)
+B) Vas deferens (শুক্রবাহী নালী)
+C) Uterus (জরায়ু)
+D) Ovary (ডিম্বাশয়)
+Answer: B
+
+Which reproductive organ produces ova? (কোন প্রজনন অঙ্গ ডিম্বাণু উৎপন্ন করে?)
+A) Uterus (জরায়ু)
+B) Vagina (যোনি)
+C) Ovary (ডিম্বাশয়)
+D) Cervix (জরায়ুমুখ)
+Answer: C
+
+Which condition is necessary for seed germination? (বীজ অঙ্কুরোদগমের জন্য কোন শর্ত প্রয়োজন?)
+A) Oxygen (অক্সিজেন)
+B) Moisture (আর্দ্রতা)
+C) Suitable temperature (উপযুক্ত তাপমাত্রা)
+D) All of these (সবগুলো)
+Answer: D
+
+Which process forms identical daughter cells in Amoeba? (অ্যামিবায় অভিন্ন কন্যা কোষ তৈরি হয় কোন প্রক্রিয়ায়?)
+A) Budding (কুঁড়ি সৃষ্টি)
+B) Binary fission (দ্বিখণ্ডন)
+C) Regeneration (পুনর্জন্ম)
+D) Spore formation (স্পোর গঠন)
+Answer: B
+
+Which reproductive method is fastest? (কোন প্রজনন পদ্ধতি সবচেয়ে দ্রুত?)
+A) Sexual reproduction (যৌন প্রজনন)
+B) Asexual reproduction (অযৌন প্রজনন)
+C) Internal fertilization (অভ্যন্তরীণ নিষেক)
+D) Cross pollination (পরপরাগায়ন)
+Answer: B
+
+Which event occurs during implantation? (প্রতিস্থাপনের সময় কোন ঘটনা ঘটে?)
+A) Embryo attaches to uterus wall (ভ্রূণ জরায়ু প্রাচীরে যুক্ত হয়)
+B) Gamete formation (গ্যামেট গঠন)
+C) Pollination (পরাগায়ন)
+D) Menstruation (ঋতুস্রাব)
+Answer: A
+
+Which process maintains chromosome number in species? (কোন প্রক্রিয়া প্রজাতিতে ক্রোমোজোম সংখ্যা বজায় রাখে?)
+A) Mitosis (মাইটোসিস)
+B) Meiosis and fertilization (মিয়োসিস ও নিষেক)
+C) Respiration (শ্বসন)
+D) Digestion (পরিপাক)
+Answer: B
+
+Which organism forms spores inside sporangia? (কোন জীব স্পোরাঞ্জিয়ামের ভিতরে স্পোর তৈরি করে?)
+A) Rhizopus (রাইজোপাস)
+B) Hydra (হাইড্রা)
+C) Amoeba (অ্যামিবা)
+D) Frog (ব্যাঙ)
+Answer: A
+
+Which process occurs before menstruation? (ঋতুস্রাবের আগে কোন প্রক্রিয়া ঘটে?)
+A) Thickening of uterine lining (জরায়ুর আবরণ পুরু হওয়া)
+B) Fertilization (নিষেক)
+C) Implantation (প্রতিস্থাপন)
+D) Ovary degeneration (ডিম্বাশয় ক্ষয়)
+Answer: A
+
+Which reproductive adaptation is seen in flowering plants? (সপুষ্পক উদ্ভিদে কোন প্রজনন অভিযোজন দেখা যায়?)
+A) Seed formation (বীজ গঠন)
+B) Budding (কুঁড়ি সৃষ্টি)
+C) Fragmentation (খণ্ডিতকরণ)
+D) Regeneration (পুনর্জন্ম)
+Answer: A
+
+Which structure develops into fetus later? (কোন গঠন পরে ভ্রূণে পরিণত হয়?)
+A) Zygote (জাইগোট)
+B) Ovule (ডিম্বক)
+C) Pollen grain (পরাগরেণু)
+D) Anther (পরাগধানী)
+Answer: A
+
+Which reproductive process occurs in ovary monthly? (ডিম্বাশয়ে প্রতি মাসে কোন প্রক্রিয়া ঘটে?)
+A) Fertilization (নিষেক)
+B) Implantation (প্রতিস্থাপন)
+C) Ovulation (ডিম্বস্ফোটন)
+D) Menopause (মেনোপজ)
+Answer: C
+
+Which organism can regenerate complete body from fragments? (কোন জীব খণ্ড থেকে সম্পূর্ণ দেহ পুনর্গঠন করতে পারে?)
+A) Hydra (হাইড্রা)
+B) Planaria (প্ল্যানেরিয়া)
+C) Amoeba (অ্যামিবা)
+D) Frog (ব্যাঙ)
+Answer: B
+
+Which flower part supports stigma? (ফুলের কোন অংশ গর্ভমুণ্ডকে ধারণ করে?)
+A) Style (গর্ভদণ্ড)
+B) Ovary (ডিম্বাশয়)
+C) Filament (পুংদণ্ড)
+D) Sepal (বৃতি)
+Answer: A
+
+Which reproductive process requires two gametes? (কোন প্রজনন প্রক্রিয়ায় দুটি গ্যামেট প্রয়োজন?)
+A) Binary fission (দ্বিখণ্ডন)
+B) Budding (কুঁড়ি সৃষ্টি)
+C) Sexual reproduction (যৌন প্রজনন)
+D) Fragmentation (খণ্ডিতকরণ)
+Answer: C
+
+Which seed part stores food in dicot seeds? (দ্বিবীজপত্রী বীজে কোন অংশ খাদ্য সঞ্চয় করে?)
+A) Cotyledons (বীজপত্র)
+B) Plumule (প্লুমিউল)
+C) Radicle (মূলাঙ্কুর)
+D) Seed coat (বীজ আবরণ)
+Answer: A
+
+Which process transfers pollen using insects? (পতঙ্গের মাধ্যমে কোন প্রক্রিয়ায় পরাগ স্থানান্তর হয়?)
+A) Germination (অঙ্কুরোদগম)
+B) Pollination (পরাগায়ন)
+C) Fertilization (নিষেক)
+D) Implantation (প্রতিস্থাপন)
+Answer: B
+
+Which organ connects fetus with mother? (কোন অঙ্গ ভ্রূণকে মায়ের সাথে যুক্ত করে?)
+A) Placenta (প্লাসেন্টা)
+B) Ovary (ডিম্বাশয়)
+C) Cervix (জরায়ুমুখ)
+D) Vagina (যোনি)
+Answer: A
+
+Which structure provides nourishment to embryo in seed? (বীজে কোন গঠন ভ্রূণকে পুষ্টি দেয়?)
+A) Cotyledon (বীজপত্র)
+B) Seed coat (বীজ আবরণ)
+C) Plumule (প্লুমিউল)
+D) Radicle (মূলাঙ্কুর)
+Answer: A
+
+Which reproductive process occurs in water mostly? (কোন প্রজনন প্রক্রিয়া সাধারণত জলে ঘটে?)
+A) Internal fertilization (অভ্যন্তরীণ নিষেক)
+B) External fertilization (বাহ্যিক নিষেক)
+C) Implantation (প্রতিস্থাপন)
+D) Ovulation (ডিম্বস্ফোটন)
+Answer: B
+
+Which plant structure develops after fertilization only? (নিষেকের পরেই কোন উদ্ভিদ গঠন তৈরি হয়?)
+A) Fruit (ফল)
+B) Pollen grain (পরাগরেণু)
+C) Anther (পরাগধানী)
+D) Sepal (বৃতি)
+Answer: A
+
+Which condition stops menstrual cycle permanently? (কোন অবস্থায় ঋতুচক্র স্থায়ীভাবে বন্ধ হয়?)
+A) Menarche (মেনার্কি)
+B) Fertilization (নিষেক)
+C) Menopause (মেনোপজ)
+D) Ovulation (ডিম্বস্ফোটন)
+Answer: C
+
+Which process helps survival in changing environment? (পরিবর্তিত পরিবেশে টিকে থাকতে কোন প্রক্রিয়া সাহায্য করে?)
+A) Asexual reproduction (অযৌন প্রজনন)
+B) Sexual reproduction (যৌন প্রজনন)
+C) Binary fission (দ্বিখণ্ডন)
+D) Budding (কুঁড়ি সৃষ্টি)
+Answer: B
+
+Which structure protects male gametes in plants? (উদ্ভিদে কোন গঠন পুরুষ গ্যামেটকে রক্ষা করে?)
+A) Ovule (ডিম্বক)
+B) Pollen grain (পরাগরেণু)
+C) Ovary (ডিম্বাশয়)
+D) Style (গর্ভদণ্ড)
+Answer: B
+
+Which reproductive structure contains embryo sac? (কোন প্রজনন গঠনে embryo sac থাকে?)
+A) Ovule (ডিম্বক)
+B) Anther (পরাগধানী)
+C) Filament (পুংদণ্ড)
+D) Stigma (গর্ভমুণ্ড)
+Answer: A
+
+Which reproductive method is common in bacteria? (ব্যাকটেরিয়ায় কোন প্রজনন পদ্ধতি সাধারণ?)
+A) Budding (কুঁড়ি সৃষ্টি)
+B) Binary fission (দ্বিখণ্ডন)
+C) Fragmentation (খণ্ডিতকরণ)
+D) Regeneration (পুনর্জন্ম)
+Answer: B
+
+Which process creates genetic variation in offspring? (কোন প্রক্রিয়া সন্তানদের মধ্যে জিনগত বৈচিত্র্য সৃষ্টি করে?)
+A) Asexual reproduction (অযৌন প্রজনন)
+B) Binary fission (দ্বিখণ্ডন)
+C) Sexual reproduction (যৌন প্রজনন)
+D) Budding (কুঁড়ি সৃষ্টি)
+Answer: C
+
+Which flower structure receives pollen during pollination? (পরাগায়নের সময় ফুলের কোন অংশ পরাগ গ্রহণ করে?)
+A) Anther (পরাগধানী)
+B) Stigma (গর্ভমুণ্ড)
+C) Ovary (ডিম্বাশয়)
+D) Filament (পুংদণ্ড)
+Answer: B
+
+Which process results in formation of embryo? (কোন প্রক্রিয়ায় ভ্রূণ গঠিত হয়?)
+A) Pollination (পরাগায়ন)
+B) Fertilization (নিষেক)
+C) Seed dispersal (বীজ বিস্তার)
+D) Germination (অঙ্কুরোদগম)
+Answer: B
+
+Which organism reproduces through budding? (কোন জীব কুঁড়ি সৃষ্টির মাধ্যমে প্রজনন করে?)
+A) Amoeba (অ্যামিবা)
+B) Hydra (হাইড্রা)
+C) Rhizopus (রাইজোপাস)
+D) Spirogyra (স্পাইরোজাইরা)
+Answer: B
+
+Which part of flower contains pollen sacs? (ফুলের কোন অংশে পরাগথলি থাকে?)
+A) Ovary (ডিম্বাশয়)
+B) Filament (পুংদণ্ড)
+C) Anther (পরাগধানী)
+D) Stigma (গর্ভমুণ্ড)
+Answer: C
+
+Which event marks beginning of reproductive age in girls? (মেয়েদের প্রজনন বয়সের সূচনা কোন ঘটনায় হয়?)
+A) Menopause (মেনোপজ)
+B) Menarche (মেনার্কি)
+C) Fertilization (নিষেক)
+D) Implantation (প্রতিস্থাপন)
+Answer: B
+
+Which reproductive process occurs after pollination? (পরাগায়নের পরে কোন প্রক্রিয়া ঘটে?)
+A) Fertilization (নিষেক)
+B) Seed dispersal (বীজ বিস্তার)
+C) Germination (অঙ্কুরোদগম)
+D) Budding (কুঁড়ি সৃষ্টি)
+Answer: A
+
+Which structure forms male gametes in humans? (মানুষে কোন গঠন পুরুষ গ্যামেট তৈরি করে?)
+A) Ovary (ডিম্বাশয়)
+B) Testes (অণ্ডকোষ)
+C) Uterus (জরায়ু)
+D) Kidney (কিডনি)
+Answer: B
+
+Which plant part develops into fruit? (উদ্ভিদের কোন অংশ ফলে পরিণত হয়?)
+A) Ovule (ডিম্বক)
+B) Ovary (ডিম্বাশয়)
+C) Stigma (গর্ভমুণ্ড)
+D) Filament (পুংদণ্ড)
+Answer: B
+
+Which process helps plants avoid overcrowding? (কোন প্রক্রিয়া উদ্ভিদে অতিরিক্ত ভিড় কমায়?)
+A) Pollination (পরাগায়ন)
+B) Fertilization (নিষেক)
+C) Seed dispersal (বীজ বিস্তার)
+D) Budding (কুঁড়ি সৃষ্টি)
+Answer: C
+
+Which structure develops into root in seed embryo? (বীজ ভ্রূণের কোন অংশ মূল তৈরি করে?)
+A) Plumule (প্লুমিউল)
+B) Cotyledon (বীজপত্র)
+C) Radicle (মূলাঙ্কুর)
+D) Seed coat (বীজ আবরণ)
+Answer: C
+
+Which type of fertilization occurs in humans? (মানুষে কোন ধরনের নিষেক ঘটে?)
+A) External fertilization (বাহ্যিক নিষেক)
+B) Internal fertilization (অভ্যন্তরীণ নিষেক)
+C) Self fertilization (স্বনিষেক)
+D) Double fertilization (দ্বৈত নিষেক)
+Answer: B
+
+Which reproductive organ receives sperm in females? (মহিলাদের কোন প্রজনন অঙ্গ শুক্রাণু গ্রহণ করে?)
+A) Ovary (ডিম্বাশয়)
+B) Uterus (জরায়ু)
+C) Vagina (যোনি)
+D) Cervix (জরায়ুমুখ)
+Answer: C
+
+Which organism reproduces by spore formation? (কোন জীব স্পোর গঠনের মাধ্যমে প্রজনন করে?)
+A) Hydra (হাইড্রা)
+B) Rhizopus (রাইজোপাস)
+C) Amoeba (অ্যামিবা)
+D) Planaria (প্ল্যানেরিয়া)
+Answer: B
+
+Which reproductive process is slower but produces variation? (কোন প্রজনন প্রক্রিয়া ধীর কিন্তু বৈচিত্র্য সৃষ্টি করে?)
+A) Binary fission (দ্বিখণ্ডন)
+B) Budding (কুঁড়ি সৃষ্টি)
+C) Sexual reproduction (যৌন প্রজনন)
+D) Fragmentation (খণ্ডিতকরণ)
+Answer: C
+
+Which structure nourishes embryo during pregnancy? (গর্ভাবস্থায় কোন গঠন ভ্রূণকে পুষ্টি দেয়?)
+A) Placenta (প্লাসেন্টা)
+B) Ovary (ডিম্বাশয়)
+C) Cervix (জরায়ুমুখ)
+D) Vagina (যোনি)
+Answer: A
+
+Which flower part protects bud stage? (ফুলের কুঁড়ি অবস্থাকে কোন অংশ রক্ষা করে?)
+A) Petal (পাপড়ি)
+B) Sepal (বৃতি)
+C) Ovary (ডিম্বাশয়)
+D) Stigma (গর্ভমুণ্ড)
+Answer: B
+
+Which reproductive method produces clones? (কোন প্রজনন পদ্ধতিতে ক্লোন তৈরি হয়?)
+A) Sexual reproduction (যৌন প্রজনন)
+B) Asexual reproduction (অযৌন প্রজনন)
+C) Cross pollination (পরপরাগায়ন)
+D) Fertilization (নিষেক)
+Answer: B
+
+Which process transfers male gametes to female gametes in plants? (উদ্ভিদে কোন প্রক্রিয়ায় পুরুষ গ্যামেট স্ত্রী গ্যামেটের কাছে পৌঁছায়?)
+A) Pollination (পরাগায়ন)
+B) Fertilization (নিষেক)
+C) Germination (অঙ্কুরোদগম)
+D) Seed formation (বীজ গঠন)
+Answer: A
+
+Which stage develops directly into embryo in plants? (উদ্ভিদে কোন স্তর সরাসরি ভ্রূণে পরিণত হয়?)
+A) Ovary (ডিম্বাশয়)
+B) Zygote (জাইগোট)
+C) Stigma (গর্ভমুণ্ড)
+D) Pollen grain (পরাগরেণু)
+Answer: B
+
+Which reproductive process maintains species continuity? (কোন প্রজনন প্রক্রিয়া প্রজাতির ধারাবাহিকতা বজায় রাখে?)
+A) Digestion (পরিপাক)
+B) Respiration (শ্বসন)
+C) Reproduction (প্রজনন)
+D) Excretion (রেচন)
+Answer: C
+
+Which animal produces eggs in water? (কোন প্রাণী জলে ডিম পাড়ে?)
+A) Human (মানুষ)
+B) Dog (কুকুর)
+C) Frog (ব্যাঙ)
+D) Cow (গরু)
+Answer: C
+
+Which plant reproductive structure contains egg cell? (উদ্ভিদের কোন প্রজনন গঠনে ডিম্বাণু থাকে?)
+A) Ovule (ডিম্বক)
+B) Anther (পরাগধানী)
+C) Filament (পুংদণ্ড)
+D) Petal (পাপড়ি)
+Answer: A
+
+Which process occurs before seed formation? (বীজ গঠনের আগে কোন প্রক্রিয়া ঘটে?)
+A) Pollination and fertilization (পরাগায়ন ও নিষেক)
+B) Germination (অঙ্কুরোদগম)
+C) Seed dispersal (বীজ বিস্তার)
+D) Budding (কুঁড়ি সৃষ্টি)
+Answer: A
+
+Which reproductive event occurs in uterus? (জরায়ুতে কোন প্রজনন ঘটনা ঘটে?)
+A) Fertilization (নিষেক)
+B) Implantation (প্রতিস্থাপন)
+C) Gamete formation (গ্যামেট গঠন)
+D) Pollination (পরাগায়ন)
+Answer: B
+
+Which structure forms placenta during pregnancy? (গর্ভাবস্থায় কোন গঠন প্লাসেন্টা তৈরি করে?)
+A) Uterine wall (জরায়ু প্রাচীর)
+B) Ovary (ডিম্বাশয়)
+C) Cervix (জরায়ুমুখ)
+D) Vagina (যোনি)
+Answer: A
+
+Which reproductive process occurs in flowering plants only? (কোন প্রজনন প্রক্রিয়া শুধুমাত্র সপুষ্পক উদ্ভিদে ঘটে?)
+A) Binary fission (দ্বিখণ্ডন)
+B) Double fertilization (দ্বৈত নিষেক)
+C) Budding (কুঁড়ি সৃষ্টি)
+D) Fragmentation (খণ্ডিতকরণ)
+Answer: B
+
+Which stage is formed after implantation? (প্রতিস্থাপনের পরে কোন স্তর গঠিত হয়?)
+A) Zygote (জাইগোট)
+B) Embryo (ভ্রূণ)
+C) Gamete (গ্যামেট)
+D) Ovule (ডিম্বক)
+Answer: B
+
+Which reproductive process is advantageous in stable environment? (স্থিতিশীল পরিবেশে কোন প্রজনন প্রক্রিয়া উপকারী?)
+A) Sexual reproduction (যৌন প্রজনন)
+B) Asexual reproduction (অযৌন প্রজনন)
+C) Cross pollination (পরপরাগায়ন)
+D) Fertilization (নিষেক)
+Answer: B
+
+Which reproductive structure produces sperm in plants? (উদ্ভিদে কোন গঠন শুক্রাণু উৎপন্ন করে?)
+A) Pollen grain (পরাগরেণু)
+B) Ovule (ডিম্বক)
+C) Ovary (ডিম্বাশয়)
+D) Style (গর্ভদণ্ড)
+Answer: A
+
+Which process helps adaptation through variations? (বৈচিত্র্যের মাধ্যমে অভিযোজনে কোন প্রক্রিয়া সাহায্য করে?)
+A) Sexual reproduction (যৌন প্রজনন)
+B) Binary fission (দ্বিখণ্ডন)
+C) Budding (কুঁড়ি সৃষ্টি)
+D) Fragmentation (খণ্ডিতকরণ)
+Answer: A
+
+Which structure supports developing fetus? (কোন গঠন বিকাশমান ভ্রূণকে ধারণ করে?)
+A) Ovary (ডিম্বাশয়)
+B) Uterus (জরায়ু)
+C) Cervix (জরায়ুমুখ)
+D) Vagina (যোনি)
+Answer: B
+
+Which reproductive structure develops into seed after fertilization? (নিষেকের পরে কোন গঠন বীজে পরিণত হয়?)
+A) Ovary (ডিম্বাশয়)
+B) Ovule (ডিম্বক)
+C) Stigma (গর্ভমুণ্ড)
+D) Filament (পুংদণ্ড)
+Answer: B
+
+Which plant process ensures transfer of pollen between flowers? (ফুলের মধ্যে পরাগ স্থানান্তর কোন প্রক্রিয়া নিশ্চিত করে?)
+A) Pollination (পরাগায়ন)
+B) Germination (অঙ্কুরোদগম)
+C) Fertilization (নিষেক)
+D) Seed dispersal (বীজ বিস্তার)
+Answer: A
+
+Which condition is caused by HIV infection? (HIV সংক্রমণে কোন অবস্থা সৃষ্টি হয়?)
+A) Syphilis (সিফিলিস)
+B) AIDS (এইডস)
+C) Gonorrhoea (গনোরিয়া)
+D) Dengue (ডেঙ্গু)
+Answer: B
+
+Which reproductive process is necessary for evolution? (বিবর্তনের জন্য কোন প্রজনন প্রক্রিয়া প্রয়োজনীয়?)
+A) Binary fission (দ্বিখণ্ডন)
+B) Asexual reproduction (অযৌন প্রজনন)
+C) Sexual reproduction (যৌন প্রজনন)
+D) Budding (কুঁড়ি সৃষ্টি)
+Answer: C
+
+Which process leads to formation of fruit and seed together? (কোন প্রক্রিয়ায় ফল ও বীজ একসাথে তৈরি হয়?)
+A) Pollination (পরাগায়ন)
+B) Fertilization (নিষেক)
+C) Germination (অঙ্কুরোদগম)
+D) Budding (কুঁড়ি সৃষ্টি)
+Answer: B
+
+Which reproductive adaptation helps species survive changing conditions? (পরিবর্তিত পরিবেশে টিকে থাকতে কোন প্রজনন অভিযোজন সাহায্য করে?)
+A) Cloning (ক্লোনিং)
+B) Variation (বৈচিত্র্য)
+C) Budding (কুঁড়ি সৃষ্টি)
+D) Fragmentation (খণ্ডিতকরণ)
+Answer: B
