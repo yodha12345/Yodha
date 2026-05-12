@@ -14,7 +14,7 @@ bot = telebot.TeleBot(API_TOKEN, threaded=True, num_threads=25)
 
 ADMIN_KEY = "Eshu2005aru"
 GROUP_ID = -1003746627836 
-VERIFY_CHANNEL_ID = -1003786586918# 📢 Replace with your Private Channel ID
+VERIFY_CHANNEL_ID = -1003786586918 # Replace with your Private Channel ID
 
 # ===== 1. DATABASE SYSTEM =====
 DB_NAME = "quiz_pro_data.db"
@@ -61,10 +61,10 @@ def save_session_to_db(session_scores, chapters_map):
 def get_top_weak_chapters(uid):
     conn = sqlite3.connect(DB_NAME)
     c = conn.cursor()
-    c.execute("SELECT chapter, wrong_count FROM weak_points WHERE user_id = ? ORDER BY wrong_count DESC LIMIT 2", (uid,))
+    c.execute("SELECT chapter FROM weak_points WHERE user_id = ? ORDER BY wrong_count DESC LIMIT 2", (uid,))
     rows = c.fetchall()
     conn.close()
-    return ", ".join([f"{r[0]} ({r[1]}❌)" for r in rows]) if rows else "None"
+    return ", ".join([r[0] for r in rows]) if rows else "N/A"
 
 init_db()
 
@@ -92,7 +92,7 @@ def handle_poll_answer(poll_answer):
             user_scores[uid]["score"] += 1.0
         else:
             user_scores[uid]["wrong"] += 1
-            user_scores[uid]["score"] -= 0.25
+            user_scores[uid]["score"] -= 0.25 # -0.25 Logic
             ch = current_poll_data["chapter"]
             wrong_chapters_tracker.setdefault(uid, {}).setdefault(ch, 0)
             wrong_chapters_tracker[uid][ch] += 1
@@ -102,19 +102,19 @@ def handle_callbacks(call):
     if call.data.startswith("skip_"):
         target_pid = call.data.split("_")[1]
         if target_pid != str(current_poll_data["poll_id"]):
-            return bot.answer_callback_query(call.id, "❌ Expired")
+            return bot.answer_callback_query(call.id, "❌ Question expired.")
         if call.from_user.id in skipped_this_q:
-            return bot.answer_callback_query(call.id, "⚠️ Already skipped")
+            return bot.answer_callback_query(call.id, "⚠️ Already skipped!")
         uid = call.from_user.id
         if uid not in user_scores:
             user_scores[uid] = {"name": call.from_user.first_name, "correct": 0, "wrong": 0, "skip": 0, "score": 0.0}
         skipped_this_q.add(uid)
         user_scores[uid]["skip"] += 1
         current_poll_data["skip_count"] += 1
-        bot.answer_callback_query(call.id, "⏩ Skipped")
+        bot.answer_callback_query(call.id, "⏩ Skipped!")
     elif call.data == "stop_quiz":
         quiz_active[GROUP_ID] = False
-        bot.answer_callback_query(call.id, "🛑 Quiz Stopping...")
+        bot.answer_callback_query(call.id, "🛑 Stopping Quiz...")
 
 # ===== 4. QUIZ ENGINE =====
 def load_questions():
@@ -148,32 +148,33 @@ def run_quiz(chat_id):
 
     bot.send_message(GROUP_ID, f"🚀 **{sub.upper()} EXAM STARTED**")
     
-    # 🛑 ADMIN STOP BUTTON
+    # STOP BUTTON FOR ADMIN
     stop_markup = types.InlineKeyboardMarkup().add(types.InlineKeyboardButton("🛑 STOP QUIZ", callback_data="stop_quiz"))
-    bot.send_message(chat_id, "Admin: Use this to stop quiz for emergencies:", reply_markup=stop_markup)
+    bot.send_message(chat_id, "Admin Emergency Stop:", reply_markup=stop_markup)
 
     for block in selected:
         if not quiz_active.get(GROUP_ID): break
+        current_poll_data.update({"skip_count": 0, "voter_count": 0})
+        skipped_this_q.clear()
         
         lines = [l.strip() for l in block.split("\n") if l.strip()]
         ch_name = sub.capitalize()
         for l in lines:
             if l.lower().startswith("#chapter:"): ch_name = l.split(":")[1].strip()
         
-        current_poll_data.update({"chapter": ch_name, "skip_count": 0, "voter_count": 0})
-        skipped_this_q.clear()
-        
+        current_poll_data["chapter"] = ch_name
         clean_q = [line for line in lines if not line.lower().startswith("#")][0]
         options = [lines[1][3:], lines[2][3:], lines[3][3:], lines[4][3:]]
         ans_letter = next((l.split(":")[-1].strip() for l in lines if "Answer:" in l), "A")
         correct_idx = ord(ans_letter) - ord("A")
 
-        # 📢 SEND TO PRIVATE VERIFICATION CHANNEL
-        bot.send_message(VERIFY_CHANNEL_ID, f"✅ **Verification**\nQ: {clean_q}\nAns: {ans_letter} ({options[correct_idx]})")
+        # VERIFICATION CHANNEL
+        bot.send_message(VERIFY_CHANNEL_ID, f"✅ Verification: {clean_q} | Ans: {ans_letter}")
 
         poll = bot.send_poll(GROUP_ID, clean_q, options, type='quiz', correct_option_id=correct_idx, is_anonymous=False, open_period=data['timer'])
-        current_poll_data.update({"poll_id": poll.poll.id, "correct_id": correct_idx})
-        
+        current_poll_data["poll_id"] = poll.poll.id
+        current_poll_data["correct_id"] = correct_idx
+
         skip_btn = types.InlineKeyboardMarkup().add(types.InlineKeyboardButton("⏩ Skip", callback_data=f"skip_{poll.poll.id}"))
         btn_msg = bot.send_message(GROUP_ID, "Tap to Skip:", reply_markup=skip_btn)
 
@@ -191,18 +192,32 @@ def run_quiz(chat_id):
 
     save_session_to_db(user_scores, wrong_chapters_tracker)
     
-    # Combined Report Presentation
-    report = f"📊 **EXAM PROGRESS REPORT** 📊\n📅 {datetime.now().strftime('%d %b %Y')}\n━━━━━━━━━━━━━━\n"
+    # Combined Report
+    report = f"📊 **EXAM REPORT** 📊\n━━━━━━━━━━━━━━\n"
     sorted_u = sorted(user_scores.values(), key=lambda x: x['score'], reverse=True)
     for i, u in enumerate(sorted_u[:10], 1):
         uid = next(k for k, v in user_scores.items() if v['name'] == u['name'])
         total_att = u['correct'] + u['wrong']
         acc = (u['correct'] / total_att * 100) if total_att > 0 else 0
-        report += (f"{i}. 👤 **{u['name']}**\n🎯 Acc: {acc:.1f}% | 🏆 Score: {u['score']:.2f}\n💡 Focus: {get_top_weak_chapters(uid)}\n━━━━━━━━━━━━━━\n")
+        report += (f"{i}. 👤 **{u['name']}**\n"
+                   f"✅ {u['correct']} | ❌ {u['wrong']} | ⏩ {u['skip']}\n"
+                   f"📝 Attended: {total_att} | 🎯 {acc:.1f}%\n"
+                   f"🏆 Score: {u['score']:.2f} | 💡 Weak: {get_top_weak_chapters(uid)}\n"
+                   f"━━━━━━━━━━━━━━\n")
     
+    # All-Time Leaderboard Fetch
+    report += "\n👑 **ALL-TIME HALL OF FAME** 👑\n━━━━━━━━━━━━━━\n"
+    conn = sqlite3.connect(DB_NAME)
+    c = conn.cursor()
+    c.execute("SELECT name, score FROM all_time_stats ORDER BY score DESC LIMIT 5")
+    for i, row in enumerate(c.fetchall(), 1):
+        report += f"{i}. {row[0]} — {row[1]:.2f} pts\n"
+    conn.close()
+
     bot.send_message(GROUP_ID, report, parse_mode="Markdown")
 
-# [Include Admin Logic Handlers from previous version here]
+# [ADMIN HANDLERS REDACTED FOR SPACE - KEEP YOUR EXISTING ONES]
 
 if __name__ == "__main__":
+    print("🤖 Bot is starting up...")
     bot.infinity_polling(skip_pending=True)
