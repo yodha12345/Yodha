@@ -22,15 +22,12 @@ DB_NAME = "quiz_pro_data.db"
 def init_db():
     conn = sqlite3.connect(DB_NAME)
     c = conn.cursor()
-    # 30-day repetition logic
     c.execute('''CREATE TABLE IF NOT EXISTS history 
                  (question_hash TEXT PRIMARY KEY, last_used TIMESTAMP)''')
-    # All-Time Stats
     c.execute('''CREATE TABLE IF NOT EXISTS all_time_stats 
                  (user_id INTEGER PRIMARY KEY, name TEXT, 
                   correct INTEGER DEFAULT 0, wrong INTEGER DEFAULT 0, 
                   skip INTEGER DEFAULT 0, score REAL DEFAULT 0.0)''')
-    # Weak Points by Chapter/Subject
     c.execute('''CREATE TABLE IF NOT EXISTS weak_points 
                  (user_id INTEGER, chapter TEXT, wrong_count INTEGER DEFAULT 0,
                   last_update DATE, PRIMARY KEY (user_id, chapter))''')
@@ -93,9 +90,9 @@ init_db()
 question_bank = {} 
 user_state = {}
 user_step = {}
-selected_chapters = {}
 user_scores = {} 
 quiz_active = {} 
+voted_users = set() 
 skipped_this_q = set() 
 wrong_chapters_tracker = {} 
 
@@ -112,16 +109,18 @@ def handle_poll_answer(poll_answer):
     if uid not in user_scores:
         user_scores[uid] = {"name": poll_answer.user.first_name, "correct": 0, "wrong": 0, "skip": 0, "score": 0.0}
     if str(poll_answer.poll_id) == str(current_poll_data["poll_id"]):
-        current_poll_data["voter_count"] += 1
-        if poll_answer.option_ids[0] == current_poll_data["correct_id"]:
-            user_scores[uid]["correct"] += 1
-            user_scores[uid]["score"] += 1.0
-        else:
-            user_scores[uid]["wrong"] += 1
-            user_scores[uid]["score"] -= 0.25 # -0.25 Negative Marking
-            ch = current_poll_data["chapter"]
-            wrong_chapters_tracker.setdefault(uid, {}).setdefault(ch, 0)
-            wrong_chapters_tracker[uid][ch] += 1
+        if uid not in skipped_this_q and uid not in voted_users:
+            current_poll_data["voter_count"] += 1
+            voted_users.add(uid)
+            if poll_answer.option_ids[0] == current_poll_data["correct_id"]:
+                user_scores[uid]["correct"] += 1
+                user_scores[uid]["score"] += 1.0
+            else:
+                user_scores[uid]["wrong"] += 1
+                user_scores[uid]["score"] -= 0.25
+                ch = current_poll_data["chapter"]
+                wrong_chapters_tracker.setdefault(uid, {}).setdefault(ch, 0)
+                wrong_chapters_tracker[uid][ch] += 1
 
 @bot.callback_query_handler(func=lambda call: True)
 def handle_callbacks(call):
@@ -129,9 +128,9 @@ def handle_callbacks(call):
     if call.data.startswith("skip_"):
         target_pid = call.data.split("_")[1]
         if target_pid != str(current_poll_data["poll_id"]):
-            return bot.answer_callback_query(call.id, "❌ Question expired.")
-        if uid in skipped_this_q:
-            return bot.answer_callback_query(call.id, "⚠️ Already skipped!")
+            return bot.answer_callback_query(call.id, "❌ Expired")
+        if uid in voted_users or uid in skipped_this_q:
+            return bot.answer_callback_query(call.id, "⚠️ Already responded!")
         if uid not in user_scores:
             user_scores[uid] = {"name": call.from_user.first_name, "correct": 0, "wrong": 0, "skip": 0, "score": 0.0}
         skipped_this_q.add(uid)
@@ -163,14 +162,23 @@ def load_questions():
 load_questions()
 
 def run_quiz(chat_id):
-    global current_poll_data, skipped_this_q, wrong_chapters_tracker
+    global current_poll_data, skipped_this_q, voted_users, wrong_chapters_tracker
     user_scores.clear()
     wrong_chapters_tracker.clear()
     data = user_state[chat_id]
     sub = data['subject']
+    
+    # 📋 Instruction Board (20s)
+    instr = (f"📋 **EXAM INSTRUCTIONS** 📋\n━━━━━━━━━━━━━━\n"
+             f"📚 Subject: {sub.capitalize()}\n"
+             f"⏱️ Time: {data['timer']}s | 👤 Limit: {data['max_answers']}\n"
+             f"❌ Negative Mark: -0.25\n━━━━━━━━━━━━━━\n🚀 Starting soon...")
+    instr_msg = bot.send_message(GROUP_ID, instr)
+    time.sleep(20)
+    bot.delete_message(GROUP_ID, instr_msg.message_id)
+
     all_pool = []
     for ch in data['chapters']: all_pool.extend(question_bank[sub].get(ch, []))
-    
     used_hashes = get_used_hashes_30_days()
     fresh_pool = [q for q in all_pool if hashlib.md5(q.encode('utf-8')).hexdigest() not in used_hashes]
     pool_to_use = fresh_pool if len(fresh_pool) >= data['count'] else all_pool
@@ -185,6 +193,7 @@ def run_quiz(chat_id):
         mark_question_used(block)
         current_poll_data.update({"skip_count": 0, "voter_count": 0})
         skipped_this_q.clear()
+        voted_users.clear()
         
         lines = [l.strip() for l in block.split("\n") if l.strip()]
         ch_name = sub.capitalize()
@@ -197,12 +206,13 @@ def run_quiz(chat_id):
         ans_letter = next((l.split(":")[-1].strip() for l in lines if "Answer:" in l), "A")
         correct_idx = ord(ans_letter) - ord("A")
 
-        # 📢 Verification Channel
-        bot.send_message(VERIFY_CHANNEL_ID, f"✅ Verification: {clean_q} | Ans: {ans_letter}")
-
+        # 🚀 GROUP POLL FIRST (Zero Delay)
         poll = bot.send_poll(GROUP_ID, clean_q, options, type='quiz', correct_option_id=correct_idx, is_anonymous=False, open_period=data['timer'])
         current_poll_data.update({"poll_id": poll.poll.id, "correct_id": correct_idx})
         
+        # 📢 PRIVATE VERIFICATION SECOND
+        bot.send_message(VERIFY_CHANNEL_ID, f"✅ Verification: {clean_q}\nCorrect Ans: {ans_letter}")
+
         skip_btn = types.InlineKeyboardMarkup().add(types.InlineKeyboardButton("⏩ Skip", callback_data=f"skip_{poll.poll.id}"))
         btn_msg = bot.send_message(GROUP_ID, "Tap to Skip:", reply_markup=skip_btn)
 
@@ -220,8 +230,8 @@ def run_quiz(chat_id):
 
     save_session_to_db(user_scores, wrong_chapters_tracker)
     
-    # Final Report
-    report = f"📊 **EXAM REPORT** 📊\n━━━━━━━━━━━━━━\n"
+    # Final Presentation
+    report = f"📊 **EXAM PROGRESS REPORT** 📊\n━━━━━━━━━━━━━━\n"
     sorted_u = sorted(user_scores.values(), key=lambda x: x['score'], reverse=True)
     for i, u in enumerate(sorted_u[:10], 1):
         uid = next(k for k, v in user_scores.items() if v['name'] == u['name'])
@@ -240,10 +250,9 @@ def run_quiz(chat_id):
     for i, row in enumerate(c.fetchall(), 1):
         report += f"{i}. {row[0]} — {row[1]:.2f} pts\n"
     conn.close()
-
     bot.send_message(GROUP_ID, report, parse_mode="Markdown")
 
-# ===== 5. ADMIN PANEL =====
+# ===== 5. ADMIN HANDLERS =====
 @bot.message_handler(commands=['admin'])
 def admin(message):
     user_step[message.chat.id] = "admin_key"
@@ -254,7 +263,7 @@ def check_key(m):
     if m.text == ADMIN_KEY:
         user_step[m.chat.id] = "subject"
         markup = types.ReplyKeyboardMarkup(resize_keyboard=True).add("Biology", "Math", "Reasoning", "Physics", "Chemistry")
-        bot.send_message(m.chat.id, "✅ Access Granted!\n📚 **Subject:**", reply_markup=markup)
+        bot.send_message(m.chat.id, "✅ Access Granted!\n📚 **Select Subject:**", reply_markup=markup)
     else:
         bot.send_message(m.chat.id, "❌ Wrong Key.")
 
@@ -265,7 +274,7 @@ def sel_sub(m):
         user_state[m.chat.id] = {'subject': sub}
         user_step[m.chat.id] = "mode"
         markup = types.ReplyKeyboardMarkup(resize_keyboard=True).add("Mix (All) 🎯", "Chapter-wise 📂")
-        bot.send_message(m.chat.id, "🎯 **Mode:**", reply_markup=markup)
+        bot.send_message(m.chat.id, "🎯 **Select Mode:**", reply_markup=markup)
 
 @bot.message_handler(func=lambda m: user_step.get(m.chat.id) == "mode")
 def sel_mode(m):
@@ -318,4 +327,4 @@ def start_trigger(message):
 if __name__ == "__main__":
     print("🤖 Bot is starting up...")
     bot.infinity_polling(skip_pending=True)
-    
+                
