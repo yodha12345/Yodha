@@ -14,9 +14,9 @@ bot = telebot.TeleBot(API_TOKEN, threaded=True, num_threads=25)
 
 ADMIN_KEY = "Eshu2005aru"
 GROUP_ID = -1003746627836 
-VERIFY_CHANNEL_ID = -1003786586918 # 📢 Replace with your Private Channel ID
+VERIFY_CHANNEL_ID = -1003786586918 # Replace with yours
 
-# ===== 1. DATABASE SYSTEM (Persistent Memory) =====
+# ===== 1. DATABASE SYSTEM =====
 DB_NAME = "quiz_pro_data.db"
 
 def init_db():
@@ -34,24 +34,6 @@ def init_db():
     conn.commit()
     conn.close()
 
-def mark_question_used(question_text):
-    conn = sqlite3.connect(DB_NAME)
-    c = conn.cursor()
-    q_hash = hashlib.md5(question_text.encode('utf-8')).hexdigest()
-    c.execute("INSERT OR REPLACE INTO history (question_hash, last_used) VALUES (?, ?)", 
-              (q_hash, datetime.now()))
-    conn.commit()
-    conn.close()
-
-def get_used_hashes_30_days():
-    conn = sqlite3.connect(DB_NAME)
-    c = conn.cursor()
-    thirty_days_ago = datetime.now() - timedelta(days=30) 
-    c.execute("SELECT question_hash FROM history WHERE last_used > ?", (thirty_days_ago,))
-    used = {row[0] for row in c.fetchall()}
-    conn.close()
-    return used
-
 def save_session_to_db(session_scores, chapters_map):
     conn = sqlite3.connect(DB_NAME)
     c = conn.cursor()
@@ -66,23 +48,8 @@ def save_session_to_db(session_scores, chapters_map):
                      skip = all_time_stats.skip + excluded.skip,
                      score = all_time_stats.score + excluded.score''', 
                   (uid, stats['name'], stats['correct'], stats['wrong'], stats['skip'], stats['score']))
-        if uid in chapters_map:
-            for chapter, wrong_count in chapters_map[uid].items():
-                c.execute('''INSERT INTO weak_points (user_id, chapter, wrong_count, last_update) 
-                             VALUES (?, ?, ?, ?) 
-                             ON CONFLICT(user_id, chapter) DO UPDATE SET 
-                             wrong_count = weak_points.wrong_count + excluded.wrong_count,
-                             last_update = excluded.last_update''', (uid, chapter, wrong_count, today))
     conn.commit()
     conn.close()
-
-def get_top_weak_chapters(uid):
-    conn = sqlite3.connect(DB_NAME)
-    c = conn.cursor()
-    c.execute("SELECT chapter FROM weak_points WHERE user_id = ? ORDER BY wrong_count DESC LIMIT 2", (uid,))
-    rows = c.fetchall()
-    conn.close()
-    return ", ".join([r[0] for r in rows]) if rows else "N/A"
 
 init_db()
 
@@ -90,6 +57,7 @@ init_db()
 question_bank = {} 
 user_state = {}
 user_step = {}
+selected_chapters = {} # FIXED: Added back the missing dictionary
 user_scores = {} 
 quiz_active = {} 
 voted_users = set() 
@@ -108,6 +76,7 @@ def handle_poll_answer(poll_answer):
     uid = poll_answer.user.id
     if uid not in user_scores:
         user_scores[uid] = {"name": poll_answer.user.first_name, "correct": 0, "wrong": 0, "skip": 0, "score": 0.0}
+    
     if str(poll_answer.poll_id) == str(current_poll_data["poll_id"]):
         if uid not in skipped_this_q and uid not in voted_users:
             current_poll_data["voter_count"] += 1
@@ -118,9 +87,6 @@ def handle_poll_answer(poll_answer):
             else:
                 user_scores[uid]["wrong"] += 1
                 user_scores[uid]["score"] -= 0.25
-                ch = current_poll_data["chapter"]
-                wrong_chapters_tracker.setdefault(uid, {}).setdefault(ch, 0)
-                wrong_chapters_tracker[uid][ch] += 1
 
 @bot.callback_query_handler(func=lambda call: True)
 def handle_callbacks(call):
@@ -129,14 +95,17 @@ def handle_callbacks(call):
         target_pid = call.data.split("_")[1]
         if target_pid != str(current_poll_data["poll_id"]):
             return bot.answer_callback_query(call.id, "❌ Expired")
+        
         if uid in voted_users or uid in skipped_this_q:
             return bot.answer_callback_query(call.id, "⚠️ Already responded!")
+            
         if uid not in user_scores:
             user_scores[uid] = {"name": call.from_user.first_name, "correct": 0, "wrong": 0, "skip": 0, "score": 0.0}
+            
         skipped_this_q.add(uid)
         user_scores[uid]["skip"] += 1
         current_poll_data["skip_count"] += 1
-        bot.answer_callback_query(call.id, "⏩ Skipped!")
+        bot.answer_callback_query(call.id, "⏩ Skipped")
     elif call.data == "stop_quiz":
         quiz_active[GROUP_ID] = False
         bot.answer_callback_query(call.id, "🛑 Stopping Quiz...")
@@ -162,58 +131,47 @@ def load_questions():
 load_questions()
 
 def run_quiz(chat_id):
-    global current_poll_data, skipped_this_q, voted_users, wrong_chapters_tracker
+    global current_poll_data, skipped_this_q, voted_users
     user_scores.clear()
-    wrong_chapters_tracker.clear()
     data = user_state[chat_id]
     sub = data['subject']
     
-    # 📋 Instruction Board (20s)
-    instr = (f"📋 **EXAM INSTRUCTIONS** 📋\n━━━━━━━━━━━━━━\n"
+    # 📋 Pre-Exam Instructions (20s)
+    instr = (f"📋 **EXAM SETUP** 📋\n━━━━━━━━━━━━━━\n"
              f"📚 Subject: {sub.capitalize()}\n"
-             f"⏱️ Time: {data['timer']}s | 👤 Limit: {data['max_answers']}\n"
-             f"❌ Negative Mark: -0.25\n━━━━━━━━━━━━━━\n🚀 Starting soon...")
+             f"⏱️ Timer: {data['timer']}s | 👤 Limit: {data['max_answers']}\n"
+             f"❌ Negative Mark: -0.25\n━━━━━━━━━━━━━━\n🚀 Starting in 20s...")
     instr_msg = bot.send_message(GROUP_ID, instr)
     time.sleep(20)
     bot.delete_message(GROUP_ID, instr_msg.message_id)
 
     all_pool = []
     for ch in data['chapters']: all_pool.extend(question_bank[sub].get(ch, []))
-    used_hashes = get_used_hashes_30_days()
-    fresh_pool = [q for q in all_pool if hashlib.md5(q.encode('utf-8')).hexdigest() not in used_hashes]
-    pool_to_use = fresh_pool if len(fresh_pool) >= data['count'] else all_pool
-    selected = random.sample(pool_to_use, min(data['count'], len(pool_to_use)))
-
-    bot.send_message(GROUP_ID, f"🚀 **{sub.upper()} EXAM STARTED**")
-    stop_markup = types.InlineKeyboardMarkup().add(types.InlineKeyboardButton("🛑 STOP QUIZ", callback_data="stop_quiz"))
-    bot.send_message(chat_id, "Admin Emergency Stop:", reply_markup=stop_markup)
+    selected = random.sample(all_pool, min(data['count'], len(all_pool)))
 
     for block in selected:
         if not quiz_active.get(GROUP_ID): break
-        mark_question_used(block)
         current_poll_data.update({"skip_count": 0, "voter_count": 0})
         skipped_this_q.clear()
         voted_users.clear()
         
         lines = [l.strip() for l in block.split("\n") if l.strip()]
-        ch_name = sub.capitalize()
-        for l in lines:
-            if l.lower().startswith("#chapter:"): ch_name = l.split(":")[1].strip()
-        
-        current_poll_data["chapter"] = ch_name
         clean_q = [line for line in lines if not line.lower().startswith("#")][0]
         options = [lines[1][3:], lines[2][3:], lines[3][3:], lines[4][3:]]
-        ans_letter = next((l.split(":")[-1].strip() for l in lines if "Answer:" in l), "A")
-        correct_idx = ord(ans_letter) - ord("A")
+        ans = next((l.split(":")[-1].strip() for l in lines if "Answer:" in l), "A")
+        correct_idx = ord(ans) - ord("A")
 
-        # 🚀 GROUP POLL FIRST (Zero Delay)
-        poll = bot.send_poll(GROUP_ID, clean_q, options, type='quiz', correct_option_id=correct_idx, is_anonymous=False, open_period=data['timer'])
-        current_poll_data.update({"poll_id": poll.poll.id, "correct_id": correct_idx})
+        # 🚀 GROUP POLL FIRST (Priority Fix)
+        poll_msg = bot.send_poll(GROUP_ID, clean_q, options, type='quiz', 
+                                 correct_option_id=correct_idx, is_anonymous=False, 
+                                 open_period=data['timer'])
         
         # 📢 PRIVATE VERIFICATION SECOND
-        bot.send_message(VERIFY_CHANNEL_ID, f"✅ Verification: {clean_q}\nCorrect Ans: {ans_letter}")
+        bot.send_message(VERIFY_CHANNEL_ID, f"✅ Verification: {clean_q}\nAns: {ans}")
 
-        skip_btn = types.InlineKeyboardMarkup().add(types.InlineKeyboardButton("⏩ Skip", callback_data=f"skip_{poll.poll.id}"))
+        current_poll_data.update({"poll_id": poll_msg.poll.id, "correct_id": correct_idx})
+        
+        skip_btn = types.InlineKeyboardMarkup().add(types.InlineKeyboardButton("⏩ Skip", callback_data=f"skip_{poll_msg.poll.id}"))
         btn_msg = bot.send_message(GROUP_ID, "Tap to Skip:", reply_markup=skip_btn)
 
         start_t = time.time()
@@ -224,33 +182,11 @@ def run_quiz(chat_id):
 
         try:
             bot.delete_message(GROUP_ID, btn_msg.message_id)
-            bot.stop_poll(GROUP_ID, poll.message_id)
+            bot.stop_poll(GROUP_ID, poll_msg.message_id)
         except: pass
-        time.sleep(2)
+        time.sleep(1.5)
 
-    save_session_to_db(user_scores, wrong_chapters_tracker)
-    
-    # Final Presentation
-    report = f"📊 **EXAM PROGRESS REPORT** 📊\n━━━━━━━━━━━━━━\n"
-    sorted_u = sorted(user_scores.values(), key=lambda x: x['score'], reverse=True)
-    for i, u in enumerate(sorted_u[:10], 1):
-        uid = next(k for k, v in user_scores.items() if v['name'] == u['name'])
-        attended = u['correct'] + u['wrong']
-        acc = (u['correct'] / attended * 100) if attended > 0 else 0
-        report += (f"{i}. 👤 **{u['name']}**\n"
-                   f"✅ {u['correct']} | ❌ {u['wrong']} | ⏩ {u['skip']}\n"
-                   f"📝 Attended: {attended} | 🎯 {acc:.1f}%\n"
-                   f"🏆 Score: {u['score']:.2f} | 💡 Weak: {get_top_weak_chapters(uid)}\n"
-                   f"━━━━━━━━━━━━━━\n")
-    
-    report += "\n👑 **ALL-TIME HALL OF FAME** 👑\n━━━━━━━━━━━━━━\n"
-    conn = sqlite3.connect(DB_NAME)
-    c = conn.cursor()
-    c.execute("SELECT name, score FROM all_time_stats ORDER BY score DESC LIMIT 5")
-    for i, row in enumerate(c.fetchall(), 1):
-        report += f"{i}. {row[0]} — {row[1]:.2f} pts\n"
-    conn.close()
-    bot.send_message(GROUP_ID, report, parse_mode="Markdown")
+    save_session_to_db(user_scores, {})
 
 # ===== 5. ADMIN HANDLERS =====
 @bot.message_handler(commands=['admin'])
@@ -264,8 +200,6 @@ def check_key(m):
         user_step[m.chat.id] = "subject"
         markup = types.ReplyKeyboardMarkup(resize_keyboard=True).add("Biology", "Math", "Reasoning", "Physics", "Chemistry")
         bot.send_message(m.chat.id, "✅ Access Granted!\n📚 **Select Subject:**", reply_markup=markup)
-    else:
-        bot.send_message(m.chat.id, "❌ Wrong Key.")
 
 @bot.message_handler(func=lambda m: user_step.get(m.chat.id) == "subject")
 def sel_sub(m):
@@ -274,7 +208,7 @@ def sel_sub(m):
         user_state[m.chat.id] = {'subject': sub}
         user_step[m.chat.id] = "mode"
         markup = types.ReplyKeyboardMarkup(resize_keyboard=True).add("Mix (All) 🎯", "Chapter-wise 📂")
-        bot.send_message(m.chat.id, "🎯 **Select Mode:**", reply_markup=markup)
+        bot.send_message(m.chat.id, "🎯 **Mode:**", reply_markup=markup)
 
 @bot.message_handler(func=lambda m: user_step.get(m.chat.id) == "mode")
 def sel_mode(m):
@@ -327,4 +261,3 @@ def start_trigger(message):
 if __name__ == "__main__":
     print("🤖 Bot is starting up...")
     bot.infinity_polling(skip_pending=True)
-                
