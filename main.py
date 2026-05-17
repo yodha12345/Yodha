@@ -126,7 +126,6 @@ def handle_callbacks(call):
 def load_questions():
     subjects = ["biology", "math", "reasoning", "physics", "chemistry"]
     for sub in subjects:
-        # Check both variant casings to support Linux/Railway server structure
         paths_to_check = [f"questions/{sub}.txt", f"questions/{sub.capitalize()}.txt"]
         target_path = None
         for p in paths_to_check:
@@ -140,11 +139,12 @@ def load_questions():
             with open(target_path, "r", encoding="utf-8") as f:
                 text = f.read()
             current_ch = sub.capitalize()
-            for block in [b.strip() for b in text.split("\n\n") if b.strip()]:
-                lines = block.split("\n")
+            blocks = [b.strip() for b in text.replace('\r\n', '\n').split("\n\n") if b.strip()]
+            for block in blocks:
+                lines = [l.strip() for l in block.split("\n") if l.strip()]
                 for l in lines:
                     if l.lower().startswith("#chapter:"): current_ch = l.split(":")[1].strip()
-                if "Answer:" in block:
+                if any("answer:" in l.lower() for l in lines):
                     question_bank.setdefault(sub, {}).setdefault(current_ch, []).append(block)
         except: pass
 
@@ -156,20 +156,22 @@ def run_quiz(chat_id):
     data = user_state[chat_id]
     sub = data['subject']
     
-    # Pre-calculate accurate question list sizes
     all_pool = []
     for ch in data['chapters']: all_pool.extend(question_bank[sub].get(ch, []))
+    
+    if not all_pool:
+        bot.send_message(chat_id, "❌ No valid questions found for this configuration!")
+        return
+
     used_hashes = get_used_hashes_30_days()
     fresh_pool = [q for q in all_pool if hashlib.md5(q.encode('utf-8')).hexdigest() not in used_hashes]
     pool_to_use = fresh_pool if len(fresh_pool) >= data['count'] else all_pool
     selected = random.sample(pool_to_use, min(data['count'], len(pool_to_use)))
     total_q = len(selected)
 
-    # Admin private emergency stop layout tracking
     stop_markup = types.InlineKeyboardMarkup().add(types.InlineKeyboardButton("🛑 STOP QUIZ", callback_data="stop_quiz"))
     bot.send_message(chat_id, "🚨 **Exam Control Panel**\nAdmin, use this button to stop the quiz:", reply_markup=stop_markup)
 
-    # Instruction board metrics setup
     chapters_text = ", ".join(data['chapters'])
     instr = (f"📋 **EXAM INSTRUCTIONS** 📋\n━━━━━━━━━━━━━━\n"
              f"📚 Subject: {sub.upper()}\n"
@@ -183,44 +185,73 @@ def run_quiz(chat_id):
 
     for block in selected:
         if not quiz_active.get(GROUP_ID): break
-        mark_question_used(block)
-        current_poll_data.update({"skip_count": 0, "voter_count": 0})
-        skipped_this_q.clear()
-        voted_users.clear()
         
-        lines = [l.strip() for l in block.split("\n") if l.strip()]
-        clean_q = [line for line in lines if not line.lower().startswith("#")][0]
-        options = [lines[1][3:], lines[2][3:], lines[3][3:], lines[4][3:]]
-        ans = next((l.split(":")[-1].strip() for l in lines if "Answer:" in l), "A")
-        correct_idx = ord(ans) - ord("A")
-
-        # Public Group Priority dispatch pipeline (Zero Lag)
-        poll_msg = bot.send_poll(GROUP_ID, clean_q, options, type='quiz', 
-                                 correct_option_id=correct_idx, is_anonymous=False, 
-                                 open_period=data['timer'])
-        
-        # Parallel Audit Feed
-        bot.send_message(VERIFY_CHANNEL_ID, f"✅ Verification: {clean_q}\nAns: {ans}")
-
-        current_poll_data.update({"poll_id": poll_msg.poll.id, "correct_id": correct_idx})
-        skip_btn = types.InlineKeyboardMarkup().add(types.InlineKeyboardButton("⏩ Skip", callback_data=f"skip_{poll_msg.poll.id}"))
-        btn_msg = bot.send_message(GROUP_ID, "Tap to Skip:", reply_markup=skip_btn)
-
-        start_t = time.time()
-        while time.time() - start_t < data['timer']:
-            if (current_poll_data["voter_count"] + current_poll_data["skip_count"]) >= data['max_answers']: break
-            if not quiz_active.get(GROUP_ID): break
-            time.sleep(0.5)
-
         try:
-            bot.delete_message(GROUP_ID, btn_msg.message_id)
-            bot.stop_poll(GROUP_ID, poll_msg.message_id)
-        except: pass
-        time.sleep(1.5)
+            lines = [l.strip() for l in block.split("\n") if l.strip()]
+            clean_lines = [l for l in lines if not l.lower().startswith("#")]
+            
+            # Identify where choices and question exist dynamically
+            q_text = ""
+            opts_raw = []
+            ans_str = "A"
+            
+            for line in clean_lines:
+                if line.lower().startswith("answer:"):
+                    ans_str = line.split(":")[-1].strip()
+                elif line.startswith(("A.", "B.", "C.", "D.", "A)", "B)", "C)", "D)")):
+                    opts_raw.append(line)
+                else:
+                    if q_text == "":
+                        q_text = line
+                    else:
+                        q_text += "\n" + line
+
+            if len(opts_raw) < 4 or q_text == "":
+                continue
+
+            # Cleans prefixes dynamically like "A) " or "A. " safely 
+            options = []
+            for opt in opts_raw[:4]:
+                options.append(opt[2:].strip())
+
+            if any(len(opt) > 100 for opt in options) or len(q_text) > 255:
+                continue
+
+            correct_idx = ord(ans_str) - ord("A")
+            if correct_idx < 0 or correct_idx > 3: correct_idx = 0
+
+            mark_question_used(block)
+            current_poll_data.update({"skip_count": 0, "voter_count": 0})
+            skipped_this_q.clear()
+            voted_users.clear()
+
+            poll_msg = bot.send_poll(GROUP_ID, q_text, options, type='quiz', 
+                                     correct_option_id=correct_idx, is_anonymous=False, 
+                                     open_period=data['timer'])
+            
+            bot.send_message(VERIFY_CHANNEL_ID, f"✅ Verification: {q_text}\nAns: {ans_str}")
+
+            current_poll_data.update({"poll_id": poll_msg.poll.id, "correct_id": correct_idx})
+            skip_btn = types.InlineKeyboardMarkup().add(types.InlineKeyboardButton("⏩ Skip", callback_data=f"skip_{poll_msg.poll.id}"))
+            btn_msg = bot.send_message(GROUP_ID, "Tap to Skip:", reply_markup=skip_btn)
+
+            start_t = time.time()
+            while time.time() - start_t < data['timer']:
+                if (current_poll_data["voter_count"] + current_poll_data["skip_count"]) >= data['max_answers']: break
+                if not quiz_active.get(GROUP_ID): break
+                time.sleep(0.5)
+
+            try:
+                bot.delete_message(GROUP_ID, btn_msg.message_id)
+                bot.stop_poll(GROUP_ID, poll_msg.message_id)
+            except: pass
+            time.sleep(1.5)
+            
+        except:
+            continue
 
     save_session_to_db(user_scores)
     
-    # Final Result metrics formatting
     report = f"📊 **EXAMINATION LEADERBOARD** 📋\n━━━━━━━━━━━━━━\n"
     sorted_u = sorted(user_scores.values(), key=lambda x: x['score'], reverse=True)
     for i, u in enumerate(sorted_u[:10], 1):
@@ -325,4 +356,4 @@ def start_trigger(message):
 if __name__ == "__main__":
     print("🤖 Bot is starting up...")
     bot.infinity_polling(skip_pending=True)
-            
+    
