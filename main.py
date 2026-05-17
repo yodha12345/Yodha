@@ -126,18 +126,26 @@ def handle_callbacks(call):
 def load_questions():
     subjects = ["biology", "math", "reasoning", "physics", "chemistry"]
     for sub in subjects:
+        # Check both variant casings to support Linux/Railway server structure
+        paths_to_check = [f"questions/{sub}.txt", f"questions/{sub.capitalize()}.txt"]
+        target_path = None
+        for p in paths_to_check:
+            if os.path.exists(p):
+                target_path = p
+                break
+                
+        if not target_path: continue
+
         try:
-            path = f"questions/{sub}.txt"
-            if os.path.exists(path):
-                with open(path, "r", encoding="utf-8") as f:
-                    text = f.read()
-                current_ch = sub.capitalize()
-                for block in [b.strip() for b in text.split("\n\n") if b.strip()]:
-                    lines = block.split("\n")
-                    for l in lines:
-                        if l.lower().startswith("#chapter:"): current_ch = l.split(":")[1].strip()
-                    if "Answer:" in block:
-                        question_bank.setdefault(sub, {}).setdefault(current_ch, []).append(block)
+            with open(target_path, "r", encoding="utf-8") as f:
+                text = f.read()
+            current_ch = sub.capitalize()
+            for block in [b.strip() for b in text.split("\n\n") if b.strip()]:
+                lines = block.split("\n")
+                for l in lines:
+                    if l.lower().startswith("#chapter:"): current_ch = l.split(":")[1].strip()
+                if "Answer:" in block:
+                    question_bank.setdefault(sub, {}).setdefault(current_ch, []).append(block)
         except: pass
 
 load_questions()
@@ -148,7 +156,7 @@ def run_quiz(chat_id):
     data = user_state[chat_id]
     sub = data['subject']
     
-    # Pre-calculate questions
+    # Pre-calculate accurate question list sizes
     all_pool = []
     for ch in data['chapters']: all_pool.extend(question_bank[sub].get(ch, []))
     used_hashes = get_used_hashes_30_days()
@@ -157,11 +165,11 @@ def run_quiz(chat_id):
     selected = random.sample(pool_to_use, min(data['count'], len(pool_to_use)))
     total_q = len(selected)
 
-    # Admin stop button
+    # Admin private emergency stop layout tracking
     stop_markup = types.InlineKeyboardMarkup().add(types.InlineKeyboardButton("🛑 STOP QUIZ", callback_data="stop_quiz"))
-    bot.send_message(chat_id, "🚨 **Exam Control Panel**\nAdmin, use this to stop the quiz:", reply_markup=stop_markup)
+    bot.send_message(chat_id, "🚨 **Exam Control Panel**\nAdmin, use this button to stop the quiz:", reply_markup=stop_markup)
 
-    # Pre-Exam Instructions
+    # Instruction board metrics setup
     chapters_text = ", ".join(data['chapters'])
     instr = (f"📋 **EXAM INSTRUCTIONS** 📋\n━━━━━━━━━━━━━━\n"
              f"📚 Subject: {sub.upper()}\n"
@@ -186,10 +194,12 @@ def run_quiz(chat_id):
         ans = next((l.split(":")[-1].strip() for l in lines if "Answer:" in l), "A")
         correct_idx = ord(ans) - ord("A")
 
+        # Public Group Priority dispatch pipeline (Zero Lag)
         poll_msg = bot.send_poll(GROUP_ID, clean_q, options, type='quiz', 
                                  correct_option_id=correct_idx, is_anonymous=False, 
                                  open_period=data['timer'])
         
+        # Parallel Audit Feed
         bot.send_message(VERIFY_CHANNEL_ID, f"✅ Verification: {clean_q}\nAns: {ans}")
 
         current_poll_data.update({"poll_id": poll_msg.poll.id, "correct_id": correct_idx})
@@ -210,6 +220,7 @@ def run_quiz(chat_id):
 
     save_session_to_db(user_scores)
     
+    # Final Result metrics formatting
     report = f"📊 **EXAMINATION LEADERBOARD** 📋\n━━━━━━━━━━━━━━\n"
     sorted_u = sorted(user_scores.values(), key=lambda x: x['score'], reverse=True)
     for i, u in enumerate(sorted_u[:10], 1):
@@ -314,4 +325,4 @@ def start_trigger(message):
 if __name__ == "__main__":
     print("🤖 Bot is starting up...")
     bot.infinity_polling(skip_pending=True)
-    
+            
