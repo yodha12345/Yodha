@@ -166,7 +166,7 @@ def run_quiz(chat_id):
     used_hashes = get_used_hashes_30_days()
     fresh_pool = [q for q in all_pool if hashlib.md5(q.encode('utf-8')).hexdigest() not in used_hashes]
     
-    # 💥 SAFETY FIX: If the 30-day rule leaves 0 questions, fallback to the entire pool
+    # Safety Check: Use complete pool if 30-day filter blocks all questions
     if len(fresh_pool) == 0:
         pool_to_use = all_pool
     else:
@@ -360,4 +360,4 @@ def start_trigger(message):
 if __name__ == "__main__":
     print("🤖 Bot is starting up...")
     bot.infinity_polling(skip_pending=True)
-        
+    
