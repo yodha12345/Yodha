@@ -39,14 +39,14 @@ def mark_question_used(question_text):
     c = conn.cursor()
     q_hash = hashlib.md5(question_text.encode('utf-8')).hexdigest()
     c.execute("INSERT OR REPLACE INTO history (question_hash, last_used) VALUES (?, ?)", 
-              (q_hash, datetime.now()))
+              (q_hash, datetime.now().strftime('%Y-%m-%d %H:%M:%S')))
     conn.commit()
     conn.close()
 
 def get_used_hashes_30_days():
     conn = sqlite3.connect(DB_NAME)
     c = conn.cursor()
-    thirty_days_ago = datetime.now() - timedelta(days=30) 
+    thirty_days_ago = (datetime.now() - timedelta(days=30)).strftime('%Y-%m-%d %H:%M:%S')
     c.execute("SELECT question_hash FROM history WHERE last_used > ?", (thirty_days_ago,))
     used = {row[0] for row in c.fetchall()}
     conn.close()
@@ -126,7 +126,7 @@ def handle_callbacks(call):
 def load_questions():
     subjects = ["biology", "math", "reasoning", "physics", "chemistry"]
     for sub in subjects:
-        paths_to_check = [f"questions/{sub}.txt", f"questions/{sub.capitalize()}.txt"]
+        paths_to_check = [f"questions/{sub}.txt", f"questions/{sub.capitalize()}.txt", f"questions/{sub.upper()}.txt"]
         target_path = None
         for p in paths_to_check:
             if os.path.exists(p):
@@ -143,7 +143,6 @@ def load_questions():
             for block in blocks:
                 lines = [l.strip() for l in block.split("\n") if l.strip()]
                 for l in lines:
-                    # FIX: Handle space variation like '#chapter :' or '#chapter:' safely
                     if l.lower().startswith("#chapter"):
                         current_ch = l.split(":")[-1].strip()
                 if any("answer:" in l.lower() for l in lines):
@@ -163,13 +162,13 @@ def run_quiz(chat_id):
         for ch in data['chapters']: 
             all_pool.extend(question_bank[sub].get(ch, []))
             
-        # Global Fallback if chapter mapping fails
+        # গ্লোবাল ফলব্যাক: যদি চ্যাপ্টারের নাম কোনো কারণে ম্যাচ না করে, সব প্রশ্ন লোড করবে
         if not all_pool:
             for ch in question_bank[sub].keys():
                 all_pool.extend(question_bank[sub][ch])
     
     if not all_pool:
-        bot.send_message(chat_id, f"❌ No questions found in `{sub}.txt`!")
+        bot.send_message(chat_id, f"❌ `{sub}.txt` ফাইল থেকে কোনো প্রশ্ন পড়া সম্ভব হয়নি!")
         return
 
     used_hashes = get_used_hashes_30_days()
@@ -224,7 +223,8 @@ def run_quiz(chat_id):
 
             options = []
             for opt in opts_raw[:4]:
-                options.append(opt[2:].strip())
+                # ডাইনামিক ফিল্টার: অপশনের পর ডট বা বন্ধনী যাই থাক, টেক্সট ক্লিন করবে
+                options.append(opt[2:].strip(" .)"))
 
             if any(len(opt) > 100 for opt in options) or len(q_text) > 255:
                 continue
@@ -374,4 +374,4 @@ def start_trigger(message):
 if __name__ == "__main__":
     print("🤖 Bot is starting up...")
     bot.infinity_polling(skip_pending=True)
-    
+                  
