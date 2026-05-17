@@ -8,370 +8,1021 @@ import sqlite3
 import hashlib
 from datetime import datetime, timedelta
 
-# Initialize Bot
+# =========================
+# BOT CONFIG
+# =========================
+
 API_TOKEN = os.getenv("BOT_TOKEN")
-bot = telebot.TeleBot(API_TOKEN, threaded=True, num_threads=25)
+
+bot = telebot.TeleBot(
+    API_TOKEN,
+    threaded=True,
+    num_threads=25
+)
 
 ADMIN_KEY = "Eshu2005aru"
-GROUP_ID = -1003746627836 
+
+GROUP_ID = -1003746627836
 VERIFY_CHANNEL_ID = -1003786586918
 
-# ===== 1. DATABASE SYSTEM =====
 DB_NAME = "quiz_pro_data.db"
 
+# =========================
+# DATABASE
+# =========================
+
 def init_db():
+
     conn = sqlite3.connect(DB_NAME)
     c = conn.cursor()
-    c.execute('''CREATE TABLE IF NOT EXISTS history 
-                 (question_hash TEXT PRIMARY KEY, last_used TIMESTAMP)''')
-    c.execute('''CREATE TABLE IF NOT EXISTS all_time_stats 
-                 (user_id INTEGER PRIMARY KEY, name TEXT, 
-                  correct INTEGER DEFAULT 0, wrong INTEGER DEFAULT 0, 
-                  skip INTEGER DEFAULT 0, score REAL DEFAULT 0.0)''')
-    c.execute('''CREATE TABLE IF NOT EXISTS weak_points 
-                 (user_id INTEGER, chapter TEXT, wrong_count INTEGER DEFAULT 0,
-                  last_update DATE, PRIMARY KEY (user_id, chapter))''')
+
+    c.execute('''
+        CREATE TABLE IF NOT EXISTS history (
+            question_hash TEXT PRIMARY KEY,
+            last_used TIMESTAMP
+        )
+    ''')
+
+    c.execute('''
+        CREATE TABLE IF NOT EXISTS all_time_stats (
+            user_id INTEGER PRIMARY KEY,
+            name TEXT,
+            correct INTEGER DEFAULT 0,
+            wrong INTEGER DEFAULT 0,
+            skip INTEGER DEFAULT 0,
+            score REAL DEFAULT 0.0
+        )
+    ''')
+
     conn.commit()
     conn.close()
+
 
 def mark_question_used(question_text):
+
     conn = sqlite3.connect(DB_NAME)
     c = conn.cursor()
-    q_hash = hashlib.md5(question_text.encode('utf-8')).hexdigest()
-    c.execute("INSERT OR REPLACE INTO history (question_hash, last_used) VALUES (?, ?)", 
-              (q_hash, datetime.now().strftime('%Y-%m-%d %H:%M:%S')))
+
+    q_hash = hashlib.md5(
+        question_text.encode('utf-8')
+    ).hexdigest()
+
+    c.execute(
+        '''
+        INSERT OR REPLACE INTO history
+        (question_hash, last_used)
+        VALUES (?, ?)
+        ''',
+        (
+            q_hash,
+            datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+        )
+    )
+
     conn.commit()
     conn.close()
+
 
 def get_used_hashes_30_days():
+
     conn = sqlite3.connect(DB_NAME)
     c = conn.cursor()
-    thirty_days_ago = (datetime.now() - timedelta(days=30)).strftime('%Y-%m-%d %H:%M:%S')
-    c.execute("SELECT question_hash FROM history WHERE last_used > ?", (thirty_days_ago,))
+
+    thirty_days_ago = (
+        datetime.now() - timedelta(days=30)
+    ).strftime('%Y-%m-%d %H:%M:%S')
+
+    c.execute(
+        '''
+        SELECT question_hash
+        FROM history
+        WHERE last_used > ?
+        ''',
+        (thirty_days_ago,)
+    )
+
     used = {row[0] for row in c.fetchall()}
+
     conn.close()
+
     return used
 
+
 def save_session_to_db(session_scores):
+
     conn = sqlite3.connect(DB_NAME)
     c = conn.cursor()
+
     for uid, stats in session_scores.items():
-        c.execute('''INSERT INTO all_time_stats (user_id, name, correct, wrong, skip, score)
-                     VALUES (?, ?, ?, ?, ?, ?)
-                     ON CONFLICT(user_id) DO UPDATE SET
-                     name = excluded.name,
-                     correct = all_time_stats.correct + excluded.correct,
-                     wrong = all_time_stats.wrong + excluded.wrong,
-                     skip = all_time_stats.skip + excluded.skip,
-                     score = all_time_stats.score + excluded.score''', 
-                  (uid, stats['name'], stats['correct'], stats['wrong'], stats['skip'], stats['score']))
+
+        c.execute(
+            '''
+            INSERT INTO all_time_stats
+            (user_id, name, correct, wrong, skip, score)
+
+            VALUES (?, ?, ?, ?, ?, ?)
+
+            ON CONFLICT(user_id)
+            DO UPDATE SET
+
+            name = excluded.name,
+
+            correct = all_time_stats.correct + excluded.correct,
+
+            wrong = all_time_stats.wrong + excluded.wrong,
+
+            skip = all_time_stats.skip + excluded.skip,
+
+            score = all_time_stats.score + excluded.score
+            ''',
+            (
+                uid,
+                stats['name'],
+                stats['correct'],
+                stats['wrong'],
+                stats['skip'],
+                stats['score']
+            )
+        )
+
     conn.commit()
     conn.close()
+
 
 init_db()
 
-# ===== 2. GLOBAL STATE =====
-question_bank = {} 
+# =========================
+# GLOBAL STATE
+# =========================
+
+question_bank = {}
+
 user_state = {}
+
 user_step = {}
+
 selected_chapters = {}
-user_scores = {} 
-quiz_active = {} 
-voted_users = set() 
-skipped_this_q = set() 
 
-current_poll_data = {"poll_id": None, "correct_id": None, "max_answers": 3, "skip_count": 0, "voter_count": 0, "chapter": ""}
+user_scores = {}
 
-# ===== 3. HANDLERS =====
-@bot.message_handler(commands=['start'])
-def welcome(message):
-    bot.reply_to(message, "👋 **Yodha Bot is Online!**\nUse /admin to configure the exam.")
+quiz_active = {}
 
-@bot.poll_answer_handler()
-def handle_poll_answer(poll_answer):
-    uid = poll_answer.user.id
-    if uid not in user_scores:
-        user_scores[uid] = {"name": poll_answer.user.first_name, "correct": 0, "wrong": 0, "skip": 0, "score": 0.0}
-    if str(poll_answer.poll_id) == str(current_poll_data["poll_id"]):
-        if uid not in skipped_this_q and uid not in voted_users:
-            current_poll_data["voter_count"] += 1
-            voted_users.add(uid)
-            if poll_answer.option_ids[0] == current_poll_data["correct_id"]:
-                user_scores[uid]["correct"] += 1
-                user_scores[uid]["score"] += 1.0
-            else:
-                user_scores[uid]["wrong"] += 1
-                user_scores[uid]["score"] -= 0.25
+voted_users = set()
 
-@bot.callback_query_handler(func=lambda call: True)
-def handle_callbacks(call):
-    uid = call.from_user.id
-    if call.data.startswith("skip_"):
-        target_pid = call.data.split("_")[1]
-        if target_pid != str(current_poll_data["poll_id"]):
-            return bot.answer_callback_query(call.id, "❌ Expired")
-        if uid in voted_users or uid in skipped_this_q:
-            return bot.answer_callback_query(call.id, "⚠️ Already responded!")
-        if uid not in user_scores:
-            user_scores[uid] = {"name": call.from_user.first_name, "correct": 0, "wrong": 0, "skip": 0, "score": 0.0}
-        skipped_this_q.add(uid)
-        user_scores[uid]["skip"] += 1
-        current_poll_data["skip_count"] += 1
-        bot.answer_callback_query(call.id, "⏩ Skipped!")
-    elif call.data == "stop_quiz":
-        quiz_active[GROUP_ID] = False
-        bot.answer_callback_query(call.id, "🛑 Stopping Quiz...")
+skipped_this_q = set()
 
-# ===== 4. QUIZ ENGINE =====
+current_poll_data = {
+    "poll_id": None,
+    "correct_id": None,
+    "max_answers": 3,
+    "skip_count": 0,
+    "voter_count": 0
+}
+
+# =========================
+# LOAD QUESTIONS
+# =========================
+
 def load_questions():
-    subjects = ["biology", "math", "reasoning", "physics", "chemistry"]
+
+    subjects = [
+        "biology",
+        "physics",
+        "chemistry",
+        "math",
+        "reasoning"
+    ]
+
     for sub in subjects:
-        paths_to_check = [f"questions/{sub}.txt", f"questions/{sub.capitalize()}.txt", f"questions/{sub.upper()}.txt"]
+
+        paths_to_check = [
+            f"questions/{sub}.txt",
+            f"questions/{sub.capitalize()}.txt",
+            f"questions/{sub.upper()}.txt"
+        ]
+
         target_path = None
+
         for p in paths_to_check:
+
             if os.path.exists(p):
                 target_path = p
                 break
-                
-        if not target_path: continue
+
+        if not target_path:
+            continue
 
         try:
-            with open(target_path, "r", encoding="utf-8") as f:
+
+            with open(
+                target_path,
+                "r",
+                encoding="utf-8"
+            ) as f:
+
                 text = f.read()
+
             current_ch = "General"
-            blocks = [b.strip() for b in text.replace('\r\n', '\n').split("\n\n") if b.strip()]
+
+            blocks = [
+                b.strip()
+                for b in text.replace(
+                    '\r\n',
+                    '\n'
+                ).split("\n\n")
+                if b.strip()
+            ]
+
             for block in blocks:
-                lines = [l.strip() for l in block.split("\n") if l.strip()]
+
+                lines = [
+                    l.strip()
+                    for l in block.split("\n")
+                    if l.strip()
+                ]
+
                 for l in lines:
+
                     if l.lower().startswith("#chapter"):
-                        current_ch = l.split(":")[-1].strip()
-                if any("answer:" in l.lower() for l in lines):
-                    question_bank.setdefault(sub, {}).setdefault(current_ch, []).append(block)
-        except: pass
+
+                        current_ch = (
+                            l.split(":")[-1].strip()
+                        )
+
+                if any(
+                    "answer:" in l.lower()
+                    for l in lines
+                ):
+
+                    question_bank.setdefault(
+                        sub,
+                        {}
+                    ).setdefault(
+                        current_ch,
+                        []
+                    ).append(block)
+
+            print(f"Loaded {sub}")
+
+        except Exception as e:
+
+            print("LOAD ERROR:", e)
+
 
 load_questions()
 
+# =========================
+# START COMMAND
+# =========================
+
+@bot.message_handler(commands=['start'])
+def welcome(message):
+
+    bot.reply_to(
+        message,
+        "👋 Yodha Quiz Bot Online!\nUse /admin"
+    )
+
+# =========================
+# POLL ANSWERS
+# =========================
+
+@bot.poll_answer_handler()
+def handle_poll_answer(poll_answer):
+
+    uid = poll_answer.user.id
+
+    if uid not in user_scores:
+
+        user_scores[uid] = {
+            "name": poll_answer.user.first_name,
+            "correct": 0,
+            "wrong": 0,
+            "skip": 0,
+            "score": 0.0
+        }
+
+    if str(poll_answer.poll_id) == str(
+        current_poll_data["poll_id"]
+    ):
+
+        if (
+            uid not in skipped_this_q
+            and uid not in voted_users
+        ):
+
+            current_poll_data["voter_count"] += 1
+
+            voted_users.add(uid)
+
+            if (
+                poll_answer.option_ids[0]
+                ==
+                current_poll_data["correct_id"]
+            ):
+
+                user_scores[uid]["correct"] += 1
+                user_scores[uid]["score"] += 1
+
+            else:
+
+                user_scores[uid]["wrong"] += 1
+                user_scores[uid]["score"] -= 0.25
+
+# =========================
+# CALLBACKS
+# =========================
+
+@bot.callback_query_handler(func=lambda call: True)
+def handle_callbacks(call):
+
+    uid = call.from_user.id
+
+    if call.data.startswith("skip_"):
+
+        target_pid = call.data.split("_")[1]
+
+        if target_pid != str(current_poll_data["poll_id"]):
+
+            return bot.answer_callback_query(
+                call.id,
+                "❌ Expired"
+            )
+
+        if (
+            uid in voted_users
+            or uid in skipped_this_q
+        ):
+
+            return bot.answer_callback_query(
+                call.id,
+                "⚠️ Already responded!"
+            )
+
+        if uid not in user_scores:
+
+            user_scores[uid] = {
+                "name": call.from_user.first_name,
+                "correct": 0,
+                "wrong": 0,
+                "skip": 0,
+                "score": 0.0
+            }
+
+        skipped_this_q.add(uid)
+
+        user_scores[uid]["skip"] += 1
+
+        current_poll_data["skip_count"] += 1
+
+        bot.answer_callback_query(
+            call.id,
+            "⏩ Skipped!"
+        )
+
+    elif call.data == "stop_quiz":
+
+        quiz_active[GROUP_ID] = False
+
+        bot.answer_callback_query(
+            call.id,
+            "🛑 Quiz Stopping..."
+        )
+
+# =========================
+# QUIZ ENGINE
+# =========================
+
 def run_quiz(chat_id):
-    global current_poll_data, skipped_this_q, voted_users
+
+    global current_poll_data
+    global skipped_this_q
+    global voted_users
+
     user_scores.clear()
+
     data = user_state[chat_id]
+
     sub = data['subject']
-    
+
     all_pool = []
+
     if sub in question_bank:
-        for ch in data['chapters']: 
-            all_pool.extend(question_bank[sub].get(ch, []))
-            
-        # গ্লোবাল ফলব্যাক: যদি চ্যাপ্টারের নাম কোনো কারণে ম্যাচ না করে, সব প্রশ্ন লোড করবে
+
+        for ch in data['chapters']:
+
+            all_pool.extend(
+                question_bank[sub].get(ch, [])
+            )
+
         if not all_pool:
-            for ch in question_bank[sub].keys():
-                all_pool.extend(question_bank[sub][ch])
-    
+
+            for ch in question_bank[sub]:
+
+                all_pool.extend(
+                    question_bank[sub][ch]
+                )
+
     if not all_pool:
-        bot.send_message(chat_id, f"❌ `{sub}.txt` ফাইল থেকে কোনো প্রশ্ন পড়া সম্ভব হয়নি!")
+
+        bot.send_message(
+            chat_id,
+            "❌ No questions found!"
+        )
+
         return
 
     used_hashes = get_used_hashes_30_days()
-    fresh_pool = [q for q in all_pool if hashlib.md5(q.encode('utf-8')).hexdigest() not in used_hashes]
-    
+
+    fresh_pool = [
+
+        q for q in all_pool
+
+        if hashlib.md5(
+            q.encode('utf-8')
+        ).hexdigest() not in used_hashes
+    ]
+
     if len(fresh_pool) == 0:
+
         pool_to_use = all_pool
+
     else:
-        pool_to_use = fresh_pool if len(fresh_pool) >= data['count'] else all_pool
-        
-    selected = random.sample(pool_to_use, min(data['count'], len(pool_to_use)))
+
+        if len(fresh_pool) >= data['count']:
+            pool_to_use = fresh_pool
+        else:
+            pool_to_use = all_pool
+
+    selected = random.sample(
+        pool_to_use,
+        min(data['count'], len(pool_to_use))
+    )
+
     total_q = len(selected)
 
-    stop_markup = types.InlineKeyboardMarkup().add(types.InlineKeyboardButton("🛑 STOP QUIZ", callback_data="stop_quiz"))
-    bot.send_message(chat_id, "🚨 **Exam Control Panel**\nAdmin, use this button to stop the quiz:", reply_markup=stop_markup)
+    stop_markup = (
+        types.InlineKeyboardMarkup()
+    )
 
-    chapters_text = ", ".join(data['chapters'])
-    instr = (f"📋 **EXAM INSTRUCTIONS** 📋\n━━━━━━━━━━━━━━\n"
-             f"📚 Subject: {sub.upper()}\n"
-             f"📂 Chapters: {chapters_text}\n"
-             f"🔢 Total Questions: {total_q}\n"
-             f"⏱️ Timer: {data['timer']}s | 👤 Limit: {data['max_answers']}\n"
-             f"❌ Negative Mark: -0.25\n━━━━━━━━━━━━━━\n🚀 Starting in 20s...")
-    instr_msg = bot.send_message(GROUP_ID, instr)
-    time.sleep(20)
-    bot.delete_message(GROUP_ID, instr_msg.message_id)
+    stop_markup.add(
+        types.InlineKeyboardButton(
+            "🛑 STOP QUIZ",
+            callback_data="stop_quiz"
+        )
+    )
+
+    bot.send_message(
+        GROUP_ID,
+        "🚨 QUIZ CONTROL PANEL",
+        reply_markup=stop_markup
+    )
+
+    instr = (
+        f"📚 Subject: {sub.upper()}\n"
+        f"🔢 Questions: {total_q}\n"
+        f"⏱ Timer: {data['timer']} sec\n"
+        f"👤 Limit: {data['max_answers']}\n"
+        f"❌ Negative: -0.25\n\n"
+        f"🚀 Starting in 10 seconds..."
+    )
+
+    instr_msg = bot.send_message(
+        GROUP_ID,
+        instr
+    )
+
+    time.sleep(10)
+
+    try:
+        bot.delete_message(
+            GROUP_ID,
+            instr_msg.message_id
+        )
+    except:
+        pass
+
+    # =========================
+    # QUESTION LOOP
+    # =========================
 
     for block in selected:
-        if not quiz_active.get(GROUP_ID): break
-        
+
+        if not quiz_active.get(GROUP_ID):
+            break
+
         try:
-            lines = [l.strip() for l in block.split("\n") if l.strip()]
-            clean_lines = [l for l in lines if not l.lower().startswith("#")]
-            
+
+            lines = [
+                l.strip()
+                for l in block.split("\n")
+                if l.strip()
+            ]
+
+            clean_lines = [
+
+                l for l in lines
+
+                if not l.lower().startswith("#")
+            ]
+
             q_text = ""
+
             opts_raw = []
+
             ans_str = "A"
-            
+
             for line in clean_lines:
+
                 if line.lower().startswith("answer:"):
-                    ans_str = line.split(":")[-1].strip()
-                elif line.startswith(("A.", "B.", "C.", "D.", "A)", "B)", "C)", "D)")):
+
+                    ans_str = (
+                        line.split(":")[-1]
+                        .strip()
+                        .upper()
+                    )
+
+                elif line.startswith((
+                    "A.",
+                    "B.",
+                    "C.",
+                    "D.",
+                    "A)",
+                    "B)",
+                    "C)",
+                    "D)"
+                )):
+
                     opts_raw.append(line)
+
                 else:
+
                     if q_text == "":
                         q_text = line
                     else:
                         q_text += "\n" + line
 
-            if len(opts_raw) < 4 or q_text == "":
+            if len(opts_raw) < 4:
+
+                print("SKIPPED: less than 4 options")
                 continue
 
             options = []
+
             for opt in opts_raw[:4]:
-                # ডাইনামিক ফিল্টার: অপশনের পর ডট বা বন্ধনী যাই থাক, টেক্সট ক্লিন করবে
-                options.append(opt[2:].strip(" .)"))
 
-            if any(len(opt) > 100 for opt in options) or len(q_text) > 255:
-                continue
+                cleaned = (
+                    opt[2:]
+                    .strip(" .)")
+                )
 
-            correct_idx = ord(ans_str) - ord("A")
-            if correct_idx < 0 or correct_idx > 3: correct_idx = 0
+                cleaned = cleaned[:95]
+
+                options.append(cleaned)
+
+            q_text = q_text[:250]
+
+            correct_idx = (
+                ord(ans_str) - ord("A")
+            )
+
+            if correct_idx < 0 or correct_idx > 3:
+                correct_idx = 0
 
             mark_question_used(block)
-            current_poll_data.update({"skip_count": 0, "voter_count": 0})
+
+            current_poll_data.update({
+                "skip_count": 0,
+                "voter_count": 0
+            })
+
             skipped_this_q.clear()
+
             voted_users.clear()
 
-            poll_msg = bot.send_poll(GROUP_ID, q_text, options, type='quiz', 
-                                     correct_option_id=correct_idx, is_anonymous=False, 
-                                     open_period=data['timer'])
-            
-            bot.send_message(VERIFY_CHANNEL_ID, f"✅ Verification: {q_text}\nAns: {ans_str}")
+            # SEND POLL
 
-            current_poll_data.update({"poll_id": poll_msg.poll.id, "correct_id": correct_idx})
-            skip_btn = types.InlineKeyboardMarkup().add(types.InlineKeyboardButton("⏩ Skip", callback_data=f"skip_{poll_msg.poll.id}"))
-            btn_msg = bot.send_message(GROUP_ID, "Tap to Skip:", reply_markup=skip_btn)
+            poll_msg = bot.send_poll(
+                GROUP_ID,
+                question=q_text,
+                options=options,
+                type='quiz',
+                correct_option_id=correct_idx,
+                is_anonymous=False,
+                open_period=data['timer']
+            )
+
+            print("Poll Sent")
+
+            # VERIFY CHANNEL
+
+            try:
+
+                bot.send_message(
+                    VERIFY_CHANNEL_ID,
+                    f"✅ {q_text}\n\nAnswer: {ans_str}"
+                )
+
+            except Exception as e:
+
+                print("VERIFY ERROR:", e)
+
+            current_poll_data.update({
+                "poll_id": poll_msg.poll.id,
+                "correct_id": correct_idx
+            })
+
+            # SKIP BUTTON
+
+            skip_btn = (
+                types.InlineKeyboardMarkup()
+            )
+
+            skip_btn.add(
+                types.InlineKeyboardButton(
+                    "⏩ Skip",
+                    callback_data=f"skip_{poll_msg.poll.id}"
+                )
+            )
+
+            btn_msg = bot.send_message(
+                GROUP_ID,
+                "Tap below to skip",
+                reply_markup=skip_btn
+            )
 
             start_t = time.time()
+
             while time.time() - start_t < data['timer']:
-                if (current_poll_data["voter_count"] + current_poll_data["skip_count"]) >= data['max_answers']: break
-                if not quiz_active.get(GROUP_ID): break
+
+                if not quiz_active.get(GROUP_ID):
+                    break
+
+                total_response = (
+                    current_poll_data["voter_count"]
+                    +
+                    current_poll_data["skip_count"]
+                )
+
+                if total_response >= data['max_answers']:
+                    break
+
                 time.sleep(0.5)
 
             try:
-                bot.delete_message(GROUP_ID, btn_msg.message_id)
-                bot.stop_poll(GROUP_ID, poll_msg.message_id)
-            except: pass
+
+                bot.delete_message(
+                    GROUP_ID,
+                    btn_msg.message_id
+                )
+
+            except:
+                pass
+
+            try:
+
+                bot.stop_poll(
+                    GROUP_ID,
+                    poll_msg.message_id
+                )
+
+            except:
+                pass
+
             time.sleep(1.5)
-            
-        except:
+
+        except Exception as e:
+
+            print("QUESTION ERROR:", e)
+
             continue
 
-    save_session_to_db(user_scores)
-    
-    report = f"📊 **EXAMINATION LEADERBOARD** 📋\n━━━━━━━━━━━━━━\n"
-    sorted_u = sorted(user_scores.values(), key=lambda x: x['score'], reverse=True)
-    for i, u in enumerate(sorted_u[:10], 1):
-        attended = u['correct'] + u['wrong']
-        acc = (u['correct'] / attended * 100) if attended > 0 else 0
-        report += (f"{i}. 👤 **{u['name']}**\n"
-                   f"✅ {u['correct']} | ❌ {u['wrong']} | ⏩ {u['skip']}\n"
-                   f"📝 Attended: {attended} | 🎯 {acc:.1f}%\n"
-                   f"🏆 Score: {u['score']:.2f}\n"
-                   f"━━━━━━━━━━━━━━\n")
-    
-    report += "\n👑 **ALL-TIME HALL OF FAME** 👑\n━━━━━━━━━━━━━━\n"
-    conn = sqlite3.connect(DB_NAME)
-    c = conn.cursor()
-    c.execute("SELECT name, score FROM all_time_stats ORDER BY score DESC LIMIT 5")
-    for i, row in enumerate(c.fetchall(), 1):
-        report += f"{i}. {row[0]} — {row[1]:.2f} pts\n"
-    conn.close()
-    bot.send_message(GROUP_ID, report, parse_mode="Markdown")
+    # =========================
+    # SAVE SESSION
+    # =========================
 
-# ===== 5. ADMIN HANDLERS =====
+    save_session_to_db(user_scores)
+
+    # =========================
+    # LEADERBOARD
+    # =========================
+
+    report = (
+        "📊 EXAM LEADERBOARD\n"
+        "━━━━━━━━━━━━━━\n"
+    )
+
+    sorted_u = sorted(
+        user_scores.values(),
+        key=lambda x: x['score'],
+        reverse=True
+    )
+
+    if not sorted_u:
+
+        report += "\nNo participants.\n"
+
+    for i, u in enumerate(sorted_u[:10], 1):
+
+        attended = (
+            u['correct']
+            +
+            u['wrong']
+        )
+
+        acc = (
+            (
+                u['correct']
+                /
+                attended
+            ) * 100
+            if attended > 0
+            else 0
+        )
+
+        report += (
+            f"\n{i}. {u['name']}\n"
+            f"✅ Correct: {u['correct']}\n"
+            f"❌ Wrong: {u['wrong']}\n"
+            f"⏩ Skip: {u['skip']}\n"
+            f"🎯 Accuracy: {acc:.1f}%\n"
+            f"🏆 Score: {u['score']:.2f}\n"
+            f"━━━━━━━━━━━━━━"
+        )
+
+    report += (
+        "\n\n👑 ALL TIME TOPPERS 👑\n"
+        "━━━━━━━━━━━━━━\n"
+    )
+
+    try:
+
+        conn = sqlite3.connect(DB_NAME)
+
+        c = conn.cursor()
+
+        c.execute(
+            '''
+            SELECT name, score
+            FROM all_time_stats
+            ORDER BY score DESC
+            LIMIT 5
+            '''
+        )
+
+        rows = c.fetchall()
+
+        for i, row in enumerate(rows, 1):
+
+            report += (
+                f"{i}. {row[0]}"
+                f" — {row[1]:.2f} pts\n"
+            )
+
+        conn.close()
+
+    except Exception as e:
+
+        print("LEADERBOARD ERROR:", e)
+
+    bot.send_message(
+        GROUP_ID,
+        report
+    )
+
+# =========================
+# ADMIN
+# =========================
+
 @bot.message_handler(commands=['admin'])
 def admin(message):
+
     user_step[message.chat.id] = "admin_key"
-    bot.send_message(message.chat.id, "🔑 **Enter Admin Key:**")
 
-@bot.message_handler(func=lambda m: user_step.get(m.chat.id) == "admin_key")
+    bot.send_message(
+        message.chat.id,
+        "🔑 Enter Admin Key"
+    )
+
+
+@bot.message_handler(
+    func=lambda m:
+    user_step.get(m.chat.id) == "admin_key"
+)
 def check_key(m):
+
     if m.text == ADMIN_KEY:
+
         user_step[m.chat.id] = "subject"
-        markup = types.ReplyKeyboardMarkup(resize_keyboard=True).add("Biology", "Math", "Reasoning", "Physics", "Chemistry")
-        bot.send_message(m.chat.id, "✅ Access Granted!\n📚 **Select Subject:**", reply_markup=markup)
-    else:
-        bot.send_message(m.chat.id, "❌ Wrong Key.")
 
-@bot.message_handler(func=lambda m: user_step.get(m.chat.id) == "subject")
+        markup = (
+            types.ReplyKeyboardMarkup(
+                resize_keyboard=True
+            )
+        )
+
+        markup.add(
+            "Biology",
+            "Physics",
+            "Chemistry"
+        )
+
+        markup.add(
+            "Math",
+            "Reasoning"
+        )
+
+        bot.send_message(
+            m.chat.id,
+            "✅ Access Granted\nSelect Subject",
+            reply_markup=markup
+        )
+
+    else:
+
+        bot.send_message(
+            m.chat.id,
+            "❌ Wrong Key"
+        )
+
+
+@bot.message_handler(
+    func=lambda m:
+    user_step.get(m.chat.id) == "subject"
+)
 def sel_sub(m):
+
     sub = m.text.lower()
-    
+
     question_bank.clear()
+
     load_questions()
-    
+
     if sub in question_bank:
-        user_state[m.chat.id] = {'subject': sub}
+
+        user_state[m.chat.id] = {
+            'subject': sub
+        }
+
         user_step[m.chat.id] = "mode"
-        markup = types.ReplyKeyboardMarkup(resize_keyboard=True).add("Mix (All) 🎯", "Chapter-wise 📂")
-        bot.send_message(m.chat.id, "🎯 **Select Mode:**", reply_markup=markup)
-    else:
-         bot.send_message(m.chat.id, f"❌ No questions available inside `{sub}.txt`!")
 
-@bot.message_handler(func=lambda m: user_step.get(m.chat.id) == "mode")
+        markup = (
+            types.ReplyKeyboardMarkup(
+                resize_keyboard=True
+            )
+        )
+
+        markup.add(
+            "Mix (All) 🎯",
+            "Chapter-wise 📂"
+        )
+
+        bot.send_message(
+            m.chat.id,
+            "🎯 Select Mode",
+            reply_markup=markup
+        )
+
+    else:
+
+        bot.send_message(
+            m.chat.id,
+            f"❌ No questions in {sub}.txt"
+        )
+
+
+@bot.message_handler(
+    func=lambda m:
+    user_step.get(m.chat.id) == "mode"
+)
 def sel_mode(m):
+
     sub = user_state[m.chat.id]['subject']
+
     if "Mix" in m.text:
-        user_state[m.chat.id]['chapters'] = list(question_bank[sub].keys())
+
+        user_state[m.chat.id]['chapters'] = (
+            list(question_bank[sub].keys())
+        )
+
         user_step[m.chat.id] = "count"
-        bot.send_message(m.chat.id, "🔢 **Count:**", reply_markup=types.ReplyKeyboardRemove())
+
+        bot.send_message(
+            m.chat.id,
+            "🔢 Enter Question Count",
+            reply_markup=types.ReplyKeyboardRemove()
+        )
+
     else:
+
         user_step[m.chat.id] = "chapter"
+
         selected_chapters[m.chat.id] = set()
-        markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
-        for ch in question_bank[sub]: markup.add(ch)
+
+        markup = (
+            types.ReplyKeyboardMarkup(
+                resize_keyboard=True
+            )
+        )
+
+        for ch in question_bank[sub]:
+            markup.add(ch)
+
         markup.add("DONE ✅")
-        bot.send_message(m.chat.id, "Select chapters:", reply_markup=markup)
 
-@bot.message_handler(func=lambda m: user_step.get(m.chat.id) == "chapter")
+        bot.send_message(
+            m.chat.id,
+            "Select Chapters",
+            reply_markup=markup
+        )
+
+
+@bot.message_handler(
+    func=lambda m:
+    user_step.get(m.chat.id) == "chapter"
+)
 def sel_ch(m):
+
     if m.text == "DONE ✅":
-        user_state[m.chat.id]['chapters'] = list(selected_chapters[m.chat.id])
+
+        user_state[m.chat.id]['chapters'] = (
+            list(selected_chapters[m.chat.id])
+        )
+
         user_step[m.chat.id] = "count"
-        bot.send_message(m.chat.id, "🔢 **Count:**", reply_markup=types.ReplyKeyboardRemove())
+
+        bot.send_message(
+            m.chat.id,
+            "🔢 Enter Question Count",
+            reply_markup=types.ReplyKeyboardRemove()
+        )
+
     else:
+
         selected_chapters[m.chat.id].add(m.text)
-        bot.send_message(m.chat.id, f"➕ {m.text}")
 
-@bot.message_handler(func=lambda m: user_step.get(m.chat.id) == "count")
+        bot.send_message(
+            m.chat.id,
+            f"➕ Added: {m.text}"
+        )
+
+
+@bot.message_handler(
+    func=lambda m:
+    user_step.get(m.chat.id) == "count"
+)
 def sel_count(m):
+
     try:
+
         user_state[m.chat.id]['count'] = int(m.text)
+
         user_step[m.chat.id] = "timer"
-        bot.send_message(m.chat.id, "⏱️ **Timer (sec):**")
-    except:
-        bot.send_message(m.chat.id, "❌ Enter a valid number.")
 
-@bot.message_handler(func=lambda m: user_step.get(m.chat.id) == "timer")
+        bot.send_message(
+            m.chat.id,
+            "⏱ Enter Timer"
+        )
+
+    except:
+
+        bot.send_message(
+            m.chat.id,
+            "❌ Invalid Number"
+        )
+
+
+@bot.message_handler(
+    func=lambda m:
+    user_step.get(m.chat.id) == "timer"
+)
 def sel_timer(m):
+
     try:
+
         user_state[m.chat.id]['timer'] = int(m.text)
+
         user_step[m.chat.id] = "limit"
-        bot.send_message(m.chat.id, "👤 **Answer Limit:**")
-    except:
-        bot.send_message(m.chat.id, "❌ Enter a valid number.")
 
-@bot.message_handler(func=lambda m: user_step.get(m.chat.id) == "limit")
+        bot.send_message(
+            m.chat.id,
+            "👤 Enter Answer Limit"
+        )
+
+    except:
+
+        bot.send_message(
+            m.chat.id,
+            "❌ Invalid Number"
+        )
+
+
+@bot.message_handler(
+    func=lambda m:
+    user_step.get(m.chat.id) == "limit"
+)
 def sel_limit(m):
+
     try:
-        user_state[m.chat.id]['max_answers'] = int(m.text)
-        user_step[m.chat.id] = "ready"
-        bot.send_message(m.chat.id, "✅ Ready!", reply_markup=types.ReplyKeyboardMarkup(resize_keyboard=True).add("START QUIZ 🚀"))
-    except:
-        bot.send_message(m.chat.id, "❌ Enter a valid number.")
 
-@bot.message_handler(func=lambda m: m.text == "START QUIZ 🚀" and user_step.get(m.chat.id) == "ready")
-def start_trigger(message):
-    quiz_active[GROUP_ID] = True
-    threading.Thread(target=run_quiz, args=(message.chat.id,)).start()
-
-if __name__ == "__main__":
-    print("🤖 Bot is starting up...")
-    bot.infinity_polling(skip_pending=True)
-                  
+        user_state[m.chat.id]['m
