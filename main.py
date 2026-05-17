@@ -145,7 +145,9 @@ load_questions()
 def run_quiz(chat_id):
     global current_poll_data, skipped_this_q, voted_users
     user_scores.clear()
-    data = user_state[chat_id]
+    data = user_state.get(chat_id)
+    if not data:
+        return
     sub = data['subject']
     
     # Pre-calculate questions
@@ -154,6 +156,11 @@ def run_quiz(chat_id):
     used_hashes = get_used_hashes_30_days()
     fresh_pool = [q for q in all_pool if hashlib.md5(q.encode('utf-8')).hexdigest() not in used_hashes]
     pool_to_use = fresh_pool if len(fresh_pool) >= data['count'] else all_pool
+    
+    if not pool_to_use:
+        bot.send_message(chat_id, "❌ No questions found for the selected chapters.")
+        return
+        
     selected = random.sample(pool_to_use, min(data['count'], len(pool_to_use)))
     total_q = len(selected)
 
@@ -171,7 +178,9 @@ def run_quiz(chat_id):
              f"❌ Negative Mark: -0.25\n━━━━━━━━━━━━━━\n🚀 Starting in 20s...")
     instr_msg = bot.send_message(GROUP_ID, instr)
     time.sleep(20)
-    bot.delete_message(GROUP_ID, instr_msg.message_id)
+    try:
+        bot.delete_message(GROUP_ID, instr_msg.message_id)
+    except: pass
 
     for block in selected:
         if not quiz_active.get(GROUP_ID): break
@@ -182,31 +191,46 @@ def run_quiz(chat_id):
         
         lines = [l.strip() for l in block.split("\n") if l.strip()]
         clean_q = [line for line in lines if not line.lower().startswith("#")][0]
-        options = [lines[1][3:], lines[2][3:], lines[3][3:], lines[4][3:]]
+        
+        # Raw option parsing
+        raw_options = [lines[1][3:], lines[2][3:], lines[3][3:], lines[4][3:]]
+        # Safeguard: Truncate options to 97 chars + "..." if they exceed Telegram's 100 character limit
+        options = [opt[:97] + "..." if len(opt) > 100 else opt for opt in raw_options]
+        
         ans = next((l.split(":")[-1].strip() for l in lines if "Answer:" in l), "A")
         correct_idx = ord(ans) - ord("A")
 
-        poll_msg = bot.send_poll(GROUP_ID, clean_q, options, type='quiz', 
-                                 correct_option_id=correct_idx, is_anonymous=False, 
-                                 open_period=data['timer'])
-        
-        bot.send_message(VERIFY_CHANNEL_ID, f"✅ Verification: {clean_q}\nAns: {ans}")
-
-        current_poll_data.update({"poll_id": poll_msg.poll.id, "correct_id": correct_idx})
-        skip_btn = types.InlineKeyboardMarkup().add(types.InlineKeyboardButton("⏩ Skip", callback_data=f"skip_{poll_msg.poll.id}"))
-        btn_msg = bot.send_message(GROUP_ID, "Tap to Skip:", reply_markup=skip_btn)
-
-        start_t = time.time()
-        while time.time() - start_t < data['timer']:
-            if (current_poll_data["voter_count"] + current_poll_data["skip_count"]) >= data['max_answers']: break
-            if not quiz_active.get(GROUP_ID): break
-            time.sleep(0.5)
-
         try:
-            bot.delete_message(GROUP_ID, btn_msg.message_id)
-            bot.stop_poll(GROUP_ID, poll_msg.message_id)
-        except: pass
-        time.sleep(1.5)
+            poll_msg = bot.send_poll(GROUP_ID, clean_q, options, type='quiz', 
+                                     correct_option_id=correct_idx, is_anonymous=False, 
+                                     open_period=data['timer'])
+            
+            # Background Channel verification
+            try:
+                bot.send_message(VERIFY_CHANNEL_ID, f"✅ Verification: {clean_q}\nAns: {ans}")
+            except: pass
+
+            current_poll_data.update({"poll_id": poll_msg.poll.id, "correct_id": correct_idx})
+            skip_btn = types.InlineKeyboardMarkup().add(types.InlineKeyboardButton("⏩ Skip", callback_data=f"skip_{poll_msg.poll.id}"))
+            btn_msg = bot.send_message(GROUP_ID, "Tap to Skip:", reply_markup=skip_btn)
+
+            start_t = time.time()
+            while time.time() - start_t < data['timer']:
+                if (current_poll_data["voter_count"] + current_poll_data["skip_count"]) >= data['max_answers']: break
+                if not quiz_active.get(GROUP_ID): break
+                time.sleep(0.5)
+
+            try:
+                bot.delete_message(GROUP_ID, btn_msg.message_id)
+                bot.stop_poll(GROUP_ID, poll_msg.message_id)
+            except: pass
+            time.sleep(1.5)
+            
+        except telebot.apihelper.ApiTelegramException as e:
+            # Safe Fallback: Notify the group if Telegram rejects a question block and continue the loop safely
+            bot.send_message(GROUP_ID, f"⚠️ Question skipped due to internal error: {e.description}")
+            time.sleep(2)
+            continue
 
     save_session_to_db(user_scores)
     
@@ -314,4 +338,4 @@ def start_trigger(message):
 if __name__ == "__main__":
     print("🤖 Bot is starting up...")
     bot.infinity_polling(skip_pending=True)
-            
+                  
