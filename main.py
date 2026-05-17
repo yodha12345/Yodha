@@ -138,12 +138,14 @@ def load_questions():
         try:
             with open(target_path, "r", encoding="utf-8") as f:
                 text = f.read()
-            current_ch = sub.capitalize()
+            current_ch = "General"
             blocks = [b.strip() for b in text.replace('\r\n', '\n').split("\n\n") if b.strip()]
             for block in blocks:
                 lines = [l.strip() for l in block.split("\n") if l.strip()]
                 for l in lines:
-                    if l.lower().startswith("#chapter:"): current_ch = l.split(":")[1].strip()
+                    # FIX: Handle space variation like '#chapter :' or '#chapter:' safely
+                    if l.lower().startswith("#chapter"):
+                        current_ch = l.split(":")[-1].strip()
                 if any("answer:" in l.lower() for l in lines):
                     question_bank.setdefault(sub, {}).setdefault(current_ch, []).append(block)
         except: pass
@@ -157,16 +159,22 @@ def run_quiz(chat_id):
     sub = data['subject']
     
     all_pool = []
-    for ch in data['chapters']: all_pool.extend(question_bank[sub].get(ch, []))
+    if sub in question_bank:
+        for ch in data['chapters']: 
+            all_pool.extend(question_bank[sub].get(ch, []))
+            
+        # Global Fallback if chapter mapping fails
+        if not all_pool:
+            for ch in question_bank[sub].keys():
+                all_pool.extend(question_bank[sub][ch])
     
     if not all_pool:
-        bot.send_message(chat_id, "❌ No questions found in your text files!")
+        bot.send_message(chat_id, f"❌ No questions found in `{sub}.txt`!")
         return
 
     used_hashes = get_used_hashes_30_days()
     fresh_pool = [q for q in all_pool if hashlib.md5(q.encode('utf-8')).hexdigest() not in used_hashes]
     
-    # Safety Check: Use complete pool if 30-day filter blocks all questions
     if len(fresh_pool) == 0:
         pool_to_use = all_pool
     else:
@@ -294,11 +302,17 @@ def check_key(m):
 @bot.message_handler(func=lambda m: user_step.get(m.chat.id) == "subject")
 def sel_sub(m):
     sub = m.text.lower()
+    
+    question_bank.clear()
+    load_questions()
+    
     if sub in question_bank:
         user_state[m.chat.id] = {'subject': sub}
         user_step[m.chat.id] = "mode"
         markup = types.ReplyKeyboardMarkup(resize_keyboard=True).add("Mix (All) 🎯", "Chapter-wise 📂")
         bot.send_message(m.chat.id, "🎯 **Select Mode:**", reply_markup=markup)
+    else:
+         bot.send_message(m.chat.id, f"❌ No questions available inside `{sub}.txt`!")
 
 @bot.message_handler(func=lambda m: user_step.get(m.chat.id) == "mode")
 def sel_mode(m):
