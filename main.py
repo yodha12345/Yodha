@@ -160,12 +160,18 @@ def run_quiz(chat_id):
     for ch in data['chapters']: all_pool.extend(question_bank[sub].get(ch, []))
     
     if not all_pool:
-        bot.send_message(chat_id, "❌ No valid questions found for this configuration!")
+        bot.send_message(chat_id, "❌ No questions found in your text files!")
         return
 
     used_hashes = get_used_hashes_30_days()
     fresh_pool = [q for q in all_pool if hashlib.md5(q.encode('utf-8')).hexdigest() not in used_hashes]
-    pool_to_use = fresh_pool if len(fresh_pool) >= data['count'] else all_pool
+    
+    # 💥 SAFETY FIX: If the 30-day rule leaves 0 questions, fallback to the entire pool
+    if len(fresh_pool) == 0:
+        pool_to_use = all_pool
+    else:
+        pool_to_use = fresh_pool if len(fresh_pool) >= data['count'] else all_pool
+        
     selected = random.sample(pool_to_use, min(data['count'], len(pool_to_use)))
     total_q = len(selected)
 
@@ -190,7 +196,6 @@ def run_quiz(chat_id):
             lines = [l.strip() for l in block.split("\n") if l.strip()]
             clean_lines = [l for l in lines if not l.lower().startswith("#")]
             
-            # Identify where choices and question exist dynamically
             q_text = ""
             opts_raw = []
             ans_str = "A"
@@ -209,7 +214,6 @@ def run_quiz(chat_id):
             if len(opts_raw) < 4 or q_text == "":
                 continue
 
-            # Cleans prefixes dynamically like "A) " or "A. " safely 
             options = []
             for opt in opts_raw[:4]:
                 options.append(opt[2:].strip())
@@ -356,4 +360,4 @@ def start_trigger(message):
 if __name__ == "__main__":
     print("🤖 Bot is starting up...")
     bot.infinity_polling(skip_pending=True)
-    
+        
